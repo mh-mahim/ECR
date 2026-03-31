@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta id="viewport-meta" name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CNPI ENT-3/2 Pro Routine</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
+
+    <style>
+        :root {
+            --primary: #2e7d32; 
+            --on-primary: #ffffff;
+            --primary-container: #c8e6c9;
+            --on-primary-container: #003300;
+            --bg: #fbfdf7;
+            --surface: #ffffff;
+            --surface-variant: #f2f6eb;
+            --outline: #72796f;
+            --highlight: #e8f5e9;
+            --room-bg: #e8f5e9;
+            --room-text: #1b5e20;
+            --room-border: #c8e6c9;
+            --empty-bg: #f5f8f3;
+            --hover-cell-bg: #f1f8e9;
+            --radius: 16px;
+            --shadow: 0 4px 20px rgba(0,0,0,0.08);
+            --hover-shadow: 0 12px 30px rgba(46, 125, 50, 0.18);
+            --today-border: #4caf50;
+        }
+
+        [data-theme="dark"] {
+            --primary: #81c784;
+            --on-primary: #003300;
+            --primary-container: #1b5e20;
+            --on-primary-container: #c8e6c9;
+            --bg: #121410;
+            --surface: #1c1e19;
+            --surface-variant: #242620;
+            --outline: #8b9388;
+            --highlight: #243021;
+            --room-bg: #1b5e20;
+            --room-text: #a5d6a7;
+            --room-border: #2e7d32;
+            --empty-bg: #191b17;
+            --hover-cell-bg: #2d362a;
+            --shadow: 0 4px 20px rgba(0, 0, 0, 0.45);
+            --hover-shadow: 0 12px 30px rgba(0, 0, 0, 0.7);
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--bg);
+            color: var(--on-surface);
+            margin: 0; padding: 0;
+            transition: background-color 0.3s ease, color 0.3s ease;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .container { max-width: 1100px; margin: 15px auto; padding: 0 12px; }
+
+        /* Animations */
+        @keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes pulseGlow { 0% { box-shadow: inset 0 0 0px var(--today-border); } 50% { box-shadow: inset 0 0 10px var(--today-border); } 100% { box-shadow: inset 0 0 0px var(--today-border); } }
+        
+        .animate { animation: fadeUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards; opacity: 0; }
+        .delay-1 { animation-delay: 0.1s; }
+        .delay-2 { animation-delay: 0.2s; }
+        .delay-3 { animation-delay: 0.3s; }
+
+        /* Header */
+        .header {
+            background: var(--surface); padding: 15px; border-radius: var(--radius);
+            box-shadow: var(--shadow); border: 1px solid var(--outline);
+            display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;
+            flex-wrap: wrap; gap: 10px;
+        }
+
+        .live-clock { 
+            font-size: 0.82rem; font-weight: 600; color: var(--primary); 
+            background: var(--primary-container); padding: 8px 12px; 
+            border-radius: 10px; margin-top: 8px; display: inline-flex; 
+            align-items: center; gap: 6px; flex-wrap: wrap;
+        }
+
+        .btn-icon { background: var(--primary-container); color: var(--primary); border: none; padding: 10px; border-radius: 50%; cursor: pointer; transition: 0.3s; display: flex; align-items: center; justify-content: center; }
+        .btn-icon:hover { transform: scale(1.1); background: var(--primary); color: var(--on-primary); }
+
+        /* Table Section */
+        .table-wrapper {
+            background: var(--surface); border-radius: var(--radius);
+            box-shadow: var(--shadow); border: 1px solid var(--outline);
+            overflow-x: auto; margin-bottom: 25px; scroll-behavior: smooth;
+        }
+
+        table { width: 100%; min-width: 900px; border-collapse: collapse; text-align: center; }
+        th, td { padding: 8px 4px; border: 1px solid var(--outline); transition: 0.2s; }
+        
+        th { background: var(--primary-container); color: var(--on-primary-container); font-weight: 700; padding: 12px 8px; font-size: 0.95rem; }
+        .time-header { background: var(--primary) !important; color: var(--on-primary) !important; }
+        .time-col { background: var(--surface-variant); font-weight: 600; font-size: 0.72rem; white-space: nowrap; line-height: 1.3;}
+        
+        .filled-cell { cursor: pointer; }
+        .filled-cell:hover { background: var(--hover-cell-bg); transform: scale(1.01); }
+        
+        .empty-cell { background: var(--empty-bg); color: var(--outline); font-weight: 600; font-size: 1.1rem; pointer-events: none; opacity: 0.4; }
+
+        .highlight-col-bg { background-color: var(--highlight) !important; }
+        th.highlight-today { border: 2px solid var(--today-border) !important; border-bottom: none !important; animation: pulseGlow 2.5s infinite alternate; }
+
+        .sub-name { font-weight: 700; color: var(--primary); font-size: 0.82rem; line-height: 1.1; margin-bottom: 2px; display: block;}
+        .room-no { font-size: 0.68rem; background: var(--room-bg); color: var(--room-text); border: 1px solid var(--room-border); padding: 1px 8px; border-radius: 12px; font-weight: 600; display: inline-block; margin-top: 3px; }
+
+        /* Today Classes Button */
+        .today-btn-wrapper { text-align: center; margin-bottom: 35px; }
+        .btn-large {
+            background: var(--primary); color: white; border: none; padding: 14px 28px;
+            border-radius: 30px; font-weight: 600; cursor: pointer; font-size: 1.05rem;
+            display: inline-flex; align-items: center; gap: 8px; transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 4px 15px rgba(46, 125, 50, 0.3);
+        }
+        .btn-large:hover { transform: translateY(-4px) scale(1.02); box-shadow: 0 8px 20px rgba(46, 125, 50, 0.4); }
+
+        /* Teacher Grid */
+        .section-title { text-align: center; color: var(--primary); font-size: 1.25rem; font-weight: 700; margin-bottom: 20px; }
+        .teacher-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 15px; margin-bottom: 40px; }
+        
+        .card {
+            background: var(--surface); padding: 18px; border-radius: var(--radius);
+            border: 1px solid var(--outline); box-shadow: var(--shadow);
+            cursor: pointer; transition: 0.4s cubic-bezier(0.16, 1, 0.3, 1); position: relative;
+        }
+        .card:hover { transform: translateY(-6px); box-shadow: var(--hover-shadow); }
+        .card h3 { margin: 0 0 5px 0; color: var(--primary); font-size: 1.05rem; padding-right: 40px; }
+
+        /* Modal / Pop-up */
+        .modal {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.6); display: none; align-items: center; justify-content: center;
+            z-index: 1000; backdrop-filter: blur(5px); opacity: 0; transition: opacity 0.3s ease;
+        }
+        .modal.show { opacity: 1; }
+        
+        .modal-content {
+            background: var(--surface); padding: 25px; border-radius: 20px;
+            max-width: 420px; width: 90%; position: relative; text-align: center;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.25); transform: translateY(30px); transition: transform 0.3s ease;
+        }
+        .modal.show .modal-content { transform: translateY(0); }
+        .modal-close { position: absolute; top: 15px; right: 15px; cursor: pointer; color: var(--outline); background: var(--surface-variant); border-radius: 50%; padding: 4px; transition: 0.2s; }
+        .modal-close:hover { background: #ff4c4c; color: white; transform: rotate(90deg); }
+
+        .modal-btns { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-top: 20px; }
+        .m-btn {
+            padding: 12px 15px; border-radius: 12px; border: none; font-weight: 600; font-size: 0.92rem;
+            display: flex; align-items: center; gap: 6px; cursor: pointer; transition: 0.3s; flex: 1; min-width: 110px; justify-content: center;
+        }
+        .btn-call { background: var(--primary); color: white; }
+        .btn-save { background: var(--primary-container); color: var(--primary); }
+        .btn-share { background: var(--surface-variant); color: var(--on-surface); }
+
+        .teacher-link { color: var(--primary); text-decoration: underline; cursor: pointer; font-weight: 600; }
+
+        /* Toast */
+        .toast-notification {
+            visibility: hidden; min-width: 250px; background-color: var(--primary); color: var(--on-primary);
+            text-align: center; border-radius: 30px; padding: 12px 24px; position: fixed;
+            z-index: 2000; left: 50%; bottom: 30px; transform: translateX(-50%) translateY(20px);
+            opacity: 0; display: flex; align-items: center; justify-content: center; gap: 10px; font-weight: 600;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3); transition: 0.4s ease;
+        }
+        .toast-notification.show { visibility: visible; opacity: 1; transform: translateX(-50%) translateY(0); }
+
+        /* Footer */
+        footer { padding: 30px 0; border-top: 1px solid var(--outline); text-align: center; margin-top: 40px; }
+        .social-icons { display: flex; justify-content: center; gap: 15px; margin: 15px 0; }
+        .s-icon { width: 42px; height: 42px; background: var(--primary-container); color: var(--primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; text-decoration: none; transition: 0.3s; }
+        .s-icon:hover { background: var(--primary); color: white; transform: translateY(-5px); }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <header class="header animate">
+            <div>
+                <h1 style="margin:0; font-size:1.35rem; color:var(--primary);">CNPI Routine Pro</h1>
+                <p style="margin:2px 0 0 0; font-size:0.85rem; opacity:0.8; font-weight:500;">Electronics Technology (ENT-3/2)</p>
+                <div class="live-clock">
+                    <span class="material-icons-round" style="font-size:16px;">calendar_month</span> 
+                    <span id="date-display">--</span>
+                    <span style="opacity: 0.5;">|</span>
+                    <span class="material-icons-round" style="font-size:16px;">schedule</span> 
+                    <span id="time-display">--:--:--</span>
+                </div>
+            </div>
+            <div style="display:flex; gap:10px;">
+                <button onclick="toggleView()" class="btn-icon" title="Desktop View"><span class="material-icons-round" id="view-icon">desktop_windows</span></button>
+                <button onclick="toggleTheme()" class="btn-icon" title="Toggle Theme"><span class="material-icons-round">dark_mode</span></button>
+            </div>
+        </header>
+
+        <div class="table-wrapper animate delay-1" id="table-scroll">
+            <table id="main-routine-table">
+                <thead>
+                    <tr id="table-head">
+                        <th class="time-header" style="width:100px;">Time</th>
+                    </tr>
+                </thead>
+                <tbody id="table-body">
+                    </tbody>
+            </table>
+        </div>
+
+        <div class="today-btn-wrapper animate delay-2">
+            <button class="btn-large" onclick="showTodayClasses()">
+                <span class="material-icons-round">event_note</span>
+                See Today's Classes
+            </button>
+        </div>
+
+        <h2 class="section-title animate delay-3">Faculty & Subject Info</h2>
+        <div class="teacher-grid animate delay-3" id="teacher-container">
+            </div>
+
+        <footer class="animate delay-3">
+            <div style="font-weight:600; font-size: 0.95rem;">Developed with ❤️ by <a href="https://mhmahim.me" target="_blank" style="color:var(--primary); text-decoration:none;">M. H. Mahim</a></div>
+            <div class="social-icons">
+                <a href="https://facebook.com/m.h.mahim.facebook" target="_blank" class="s-icon"><span class="material-icons-round">facebook</span></a>
+                <a href="https://mhmahim.me" target="_blank" class="s-icon"><span class="material-icons-round">language</span></a>
+                <a href="https://github.com/mh-mahim" target="_blank" class="s-icon">
+                    <svg viewBox="0 0 24 24" fill="currentColor" style="width:20px; height:20px;"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>
+                </a>
+            </div>
+            <div style="font-size:0.8rem; opacity:0.6;">© 2026 CNPI ENT-3/2. All Rights Reserved.</div>
+        </footer>
+    </div>
+
+    <div class="modal" id="global-modal">
+        <div class="modal-content">
+            <span class="material-icons-round modal-close" onclick="closeModal()">close</span>
+            <div id="modal-body"></div>
+        </div>
+    </div>
+
+    <div id="toast" class="toast-notification">
+        <span class="material-icons-round">check_circle</span>
+        <span id="toast-message">Successfully!</span>
+    </div>
+
+    <script>
+        // ==========================================
+        // 🔒 DATA CENTER - EXACT INFO FROM FILE
+        // ==========================================
+        const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday"];
+        const periods = [
+            { id: 1, name: "1st", time: "01:30 PM - 02:15 PM" },
+            { id: 2, name: "2nd", time: "02:15 PM - 03:00 PM" },
+            { id: 3, name: "3rd", time: "03:00 PM - 03:45 PM" },
+            { id: 4, name: "4th", time: "03:45 PM - 04:30 PM" },
+            { id: 5, name: "5th", time: "04:30 PM - 05:15 PM" },
+            { id: 6, name: "6th", time: "05:15 PM - 06:00 PM" },
+            { id: 7, name: "7th", time: "06:00 PM - 06:45 PM" }
+        ];
+
+        const routineData = [
+            { day: "Sunday", period: 1, sub: "Electrical Circuits-II", code: "MAS", room: "EWM" },
+            { day: "Sunday", period: 2, sub: "Electrical Circuits-II", code: "MAS", room: "EWM" },
+            { day: "Sunday", period: 3, sub: "Physics-II", code: "AQZ", room: "S-316" },
+            { day: "Sunday", period: 4, sub: "Digital Ent-1", code: "MR", room: "S-316" },
+            { day: "Sunday", period: 5, sub: "Computer App", code: "MHR", room: "Software Lab" },
+            { day: "Sunday", period: 6, sub: "Computer App", code: "MHR", room: "Software Lab" },
+            
+            { day: "Monday", period: 1, sub: "Digital Ent-1", code: "MR", room: "Digital Ent" },
+            { day: "Monday", period: 2, sub: "Digital Ent-1", code: "MR", room: "Digital Ent" },
+            { day: "Monday", period: 3, sub: "Electrical Circuits-II", code: "MAS", room: "S-316" },
+            { day: "Monday", period: 4, sub: "Power Electronics", code: "DS", room: "S-316" },
+            { day: "Monday", period: 5, sub: "Mathematics-III", code: "MA", room: "S-316" },
+
+            { day: "Tuesday", period: 1, sub: "Power Electronics", code: "DS", room: "S-316" },
+            { day: "Tuesday", period: 2, sub: "Digital Ent-1", code: "MR", room: "S-316" },
+            { day: "Tuesday", period: 3, sub: "Mathematics-III", code: "MA", room: "S-316" },
+            { day: "Tuesday", period: 4, sub: "Mathematics-III", code: "MA", room: "S-316" },
+            { day: "Tuesday", period: 5, sub: "Physics-II", code: "AQZ", room: "S-316" },
+
+            { day: "Wednesday", period: 1, sub: "Electrical Circuits-II", code: "MAS", room: "Basic Ent Lab" },
+            { day: "Wednesday", period: 2, sub: "Physics-II", code: "AQZ", room: "S-316" },
+            { day: "Wednesday", period: 3, sub: "Power Electronics", code: "DS", room: "S-316" },
+            { day: "Wednesday", period: 4, sub: "Power Electronics", code: "DS", room: "S-316" },
+            { day: "Wednesday", period: 5, sub: "Mathematics-III", code: "MA", room: "S-316" },
+
+            { day: "Thursday", period: 1, sub: "Computer App", code: "MHR", room: "Software Lab" },
+            { day: "Thursday", period: 2, sub: "Computer App", code: "MHR", room: "Software Lab" },
+            { day: "Thursday", period: 3, sub: "Mathematics-III", code: "MA", room: "S-316" },
+            { day: "Thursday", period: 4, sub: "Electrical Circuits-II", code: "MAS", room: "S-316" },
+            { day: "Thursday", period: 5, sub: "Physics-II", code: "AQZ", room: "Physics Lab" },
+            { day: "Thursday", period: 6, sub: "Physics-II", code: "AQZ", room: "Physics Lab" }
+        ];
+
+        const teacherData = [
+            { name: "Md. Delowar Syed", code: "DS", sub: "Power Electronics (26832)", phone: "01776895558", desig: "Jr. Instructor (Tech/Electronics)" },
+            { name: "Mahabubul Alam", code: "MA", sub: "Mathematics-III (25931)", phone: "01745867997", desig: "Jr. Instructor (Non-Tech/Math)" },
+            { name: "Md. Abdul Quader Zilani", code: "AQZ", sub: "Physics-II (25922)", phone: "01717928560", desig: "Instructor (Non-Tech/Physics)" },
+            { name: "Md. Halim Reja", code: "MHR", sub: "Computer Office Application (28511)", phone: "01717701784", desig: "Instructor (Tech/Electronics)" },
+            { name: "Md. Abdus Salam", code: "MAS", sub: "Electrical Circuits-II (26731)", phone: "01763248085", desig: "Jr. Instructor (Tech/Electrical)" },
+            { name: "Md. Masud Rana", code: "MR", sub: "Digital Electronics-1 (26831)", phone: "01766796427", desig: "Jr. Instructor (Tech/Electronics)" }
+        ];
+
+        // ==========================================
+        // SYSTEM LOGIC - WITH ROWSPAN
+        // ==========================================
+
+        function init() {
+            const head = document.getElementById('table-head');
+            const body = document.getElementById('table-body');
+            const teacherCont = document.getElementById('teacher-container');
+
+            days.forEach(day => {
+                const th = document.createElement('th');
+                th.id = `th-${day}`; th.textContent = day; head.appendChild(th);
+            });
+
+            // Track processed cells for spanning
+            const skipMap = {};
+
+            periods.forEach(p => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `<td class="time-col">${p.name}<br><span style="font-size:0.65rem; opacity:0.7;">${p.time}</span></td>`;
+                
+                days.forEach(day => {
+                    const key = `${day}-${p.id}`;
+                    if (skipMap[key]) return;
+
+                    const classInfo = routineData.find(r => r.day === day && r.period === p.id);
+                    const td = document.createElement('td');
+                    td.id = `cell-${day}-${p.id}`;
+                    
+                    if (classInfo) {
+                        // Check if next period has the same class
+                        let span = 1;
+                        for (let nextId = p.id + 1; nextId <= periods.length; nextId++) {
+                            const nextClass = routineData.find(r => r.day === day && r.period === nextId);
+                            if (nextClass && nextClass.sub === classInfo.sub && nextClass.code === classInfo.code) {
+                                span++;
+                                skipMap[`${day}-${nextId}`] = true;
+                            } else break;
+                        }
+
+                        if (span > 1) td.rowSpan = span;
+                        td.className = "filled-cell";
+                        td.innerHTML = `<div style="padding:4px;"><span class="sub-name">${classInfo.sub}</span><span style="font-size:0.7rem; font-weight:600; opacity:0.7;">${classInfo.code}</span><br><span class="room-no">${classInfo.room}</span></div>`;
+                        td.onclick = () => showClassModal(classInfo, p.time);
+                    } else {
+                        td.className = "empty-cell"; td.textContent = "-";
+                    }
+                    tr.appendChild(td);
+                });
+                body.appendChild(tr);
+            });
+
+            teacherData.forEach(t => {
+                const card = document.createElement('div');
+                card.className = 'card';
+                card.innerHTML = `<div style="position:absolute; top:15px; right:15px; background:var(--primary-container); color:var(--primary); width:32px; height:32px; border-radius:50%; display:flex; align-items:center; justify-content:center;"><span class="material-icons-round" style="font-size:18px;">open_in_new</span></div>
+                                  <h3>${t.name}</h3>
+                                  <div style="font-size:0.85rem; font-weight:600; margin-bottom:8px;">${t.sub}</div>
+                                  <div style="font-size:0.75rem; opacity:0.8; display:flex; align-items:center; gap:5px;"><span class="material-icons-round" style="font-size:16px;">phone_iphone</span> ${t.phone}</div>`;
+                card.onclick = () => showTeacherModal(t);
+                teacherCont.appendChild(card);
+            });
+
+            updateLiveClock();
+            updateHighlights();
+            setTimeout(triggerFullScroll, 1200);
+        }
+
+        function triggerFullScroll() {
+            const wrapper = document.getElementById('table-scroll');
+            const max = wrapper.scrollWidth - wrapper.clientWidth;
+            if (max > 0) {
+                wrapper.scrollTo({ left: max, behavior: 'smooth' });
+                setTimeout(() => wrapper.scrollTo({ left: 0, behavior: 'smooth' }), 1200);
+            }
+        }
+
+        function updateLiveClock() {
+            const now = new Date();
+            document.getElementById('date-display').textContent = now.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+            document.getElementById('time-display').textContent = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true });
+        }
+        setInterval(updateLiveClock, 1000);
+
+        function updateHighlights() {
+            const today = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"][new Date().getDay()];
+            document.querySelectorAll('th, td').forEach(el => el.classList.remove('highlight-col-bg', 'highlight-today'));
+            if (days.includes(today)) {
+                const th = document.getElementById(`th-${today}`);
+                if (th) th.classList.add('highlight-today');
+                document.querySelectorAll(`[id^="cell-${today}"]`).forEach(td => td.classList.add('highlight-col-bg'));
+            }
+        }
+
+        function openModal() {
+            const m = document.getElementById('global-modal'); m.style.display = 'flex';
+            setTimeout(() => m.classList.add('show'), 10);
+        }
+
+        function closeModal() {
+            const m = document.getElementById('global-modal'); m.classList.remove('show');
+            setTimeout(() => m.style.display = 'none', 300);
+        }
+
+        function showClassModal(info, time) {
+            const t = teacherData.find(x => x.code === info.code);
+            document.getElementById('modal-body').innerHTML = `
+                <div style="width:50px; height:5px; background:var(--primary-container); border-radius:10px; margin:0 auto 15px;"></div>
+                <h2 style="color:var(--primary); margin:0;">Class Details</h2>
+                <div style="font-size:1.3rem; font-weight:700; margin:10px 0;">${info.sub}</div>
+                <div style="background:var(--surface-variant); padding:15px; border-radius:15px; text-align:left; margin-bottom:15px;">
+                    <div><span class="material-icons-round" style="vertical-align:middle; font-size:18px;">person</span> <b>Teacher:</b> <span class="teacher-link" onclick="showTeacherModalByCode('${info.code}')">${t ? t.name : info.code}</span></div>
+                    <div style="margin-top:8px;"><span class="material-icons-round" style="vertical-align:middle; font-size:18px;">room</span> <b>Room:</b> <span class="room-no" style="margin:0">${info.room}</span></div>
+                </div>
+                <div style="background:var(--primary-container); color:var(--on-primary-container); padding:12px; border-radius:12px; font-weight:700;">
+                    <span class="material-icons-round" style="vertical-align:middle;">event</span> ${info.day} &bull; ${time}
+                </div>`;
+            openModal();
+        }
+
+        function showTeacherModalByCode(code) {
+            const t = teacherData.find(x => x.code === code);
+            if (t) showTeacherModal(t);
+        }
+
+        function showTeacherModal(t) {
+            document.getElementById('modal-body').innerHTML = `
+                <div style="width:50px; height:5px; background:var(--primary-container); border-radius:10px; margin:0 auto 15px;"></div>
+                <h2 style="color:var(--primary); margin:0;">Teacher Profile</h2>
+                <div style="font-size:1.3rem; font-weight:700; margin-top:10px;">${t.name}</div>
+                <div style="font-weight:600; color:var(--primary);">${t.sub}</div>
+                <div style="font-size:0.8rem; opacity:0.8; margin-bottom:15px;">${t.desig}</div>
+                <div style="display:flex; align-items:center; justify-content:space-between; background:var(--highlight); padding:12px 15px; border-radius:12px; border:1px solid var(--primary-container);">
+                    <div style="font-weight:700; font-size:1.1rem;"><span class="material-icons-round" style="vertical-align:middle; color:var(--primary)">phone</span> ${t.phone}</div>
+                    <div onclick="copyPhone('${t.phone}')" style="background:var(--primary); color:white; padding:6px; border-radius:8px; cursor:pointer; display:flex;"><span class="material-icons-round" style="font-size:18px;">content_copy</span></div>
+                </div>
+                <div class="modal-btns">
+                    <button class="m-btn btn-call" onclick="window.location.href='tel:${t.phone}'"><span class="material-icons-round">call</span> Call</button>
+                    <button class="m-btn btn-save" onclick="saveVCard('${t.name}', '${t.phone}')"><span class="material-icons-round">person_add</span> Save</button>
+                    <button class="m-btn btn-share" onclick="shareTeacher('${t.name}', '${t.phone}')"><span class="material-icons-round">share</span> Share</button>
+                </div>`;
+            openModal();
+        }
+
+        function showTodayClasses() {
+            const today = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"][new Date().getDay()];
+            const classes = routineData.filter(r => r.day === today);
+            let html = "";
+            if (classes.length > 0) {
+                classes.forEach(c => {
+                    const p = periods.find(x => x.id === c.period);
+                    html += `<div style="text-align:left; padding:12px; border-bottom:1px solid var(--outline); display:flex; gap:12px; align-items:center;">
+                        <div style="background:var(--primary-container); padding:8px; border-radius:10px; font-weight:700; min-width:85px; text-align:center; font-size:0.75rem;">${p.name}<br><span style="font-size:0.6rem; opacity:0.7;">${p.time.split('-')[0]}</span></div>
+                        <div><div style="font-weight:700; color:var(--primary); font-size:0.9rem;">${c.sub}</div><div style="font-size:0.8rem; opacity:0.8;">${c.code} &bull; ${c.room}</div></div>
+                    </div>`;
+                });
+            } else html = "<div style='padding:30px; opacity:0.6;'>No classes today! 🎉</div>";
+
+            document.getElementById('modal-body').innerHTML = `
+                <div style="width:50px; height:5px; background:var(--primary-container); border-radius:10px; margin:0 auto 15px;"></div>
+                <h2 style="color:var(--primary); margin:0 0 10px 0;">Today's Classes</h2>
+                <div style="max-height:350px; overflow-y:auto; background:var(--surface-variant); border-radius:15px;">${html}</div>`;
+            openModal();
+        }
+
+        function showToast(msg) {
+            const t = document.getElementById("toast"); document.getElementById("toast-message").textContent = msg;
+            t.classList.add("show"); setTimeout(() => t.classList.remove("show"), 3000);
+        }
+
+        function copyPhone(num) { navigator.clipboard.writeText(num).then(() => showToast("Number Copied!")); }
+
+        function shareTeacher(name, num) {
+            const txt = `Teacher: ${name}\nPhone: ${num}`;
+            if (navigator.share) navigator.share({ title: 'Contact', text: txt }); else copyPhone(txt);
+        }
+
+        function saveVCard(name, phone) {
+            const v = `BEGIN:VCARD\nVERSION:3.0\nFN:${name}\nTEL:${phone}\nEND:VCARD`;
+            const blob = new Blob([v], { type: "text/vcard" });
+            const a = document.createElement("a"); a.href = URL.createObjectURL(blob);
+            a.download = `${name.replace(/\s/g, '_')}.vcf`; a.click();
+            showToast("VCard Downloaded!");
+        }
+
+        function toggleTheme() {
+            const b = document.body; b.setAttribute("data-theme", b.getAttribute("data-theme") === "dark" ? "" : "dark");
+        }
+
+        function toggleView() {
+            const vp = document.getElementById("viewport-meta");
+            vp.content = vp.content === "width=1024" ? "width=device-width, initial-scale=1.0" : "width=1024";
+        }
+
+        init();
+    </script>
+</body>
+</html>
+
