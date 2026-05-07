@@ -1,0 +1,15 @@
+{
+  "name": "Routine Electronics 3rd semester 2nd shift",
+  "short_name": "ECR",
+  "start_url": "index.html",
+  "display": "standalone",
+  "background_color": "#1A1614",
+  "theme_color": "#FF5C00",
+  "icons": [
+    {
+      "src": "https://plain-apac-prod-public.komododecks.com/202605/07/hLyssqg3cIluksfhtUPG/image.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
