@@ -1,0 +1,973 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta id="viewport-meta" name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>CNPI Routine Pro | ENT -3/2</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" id="meta-theme-color" content="#10b981">
+    <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/1004/1004561.png">
+
+    <style>
+        /* =========================================
+           SEESUN THEME VARIABLES (BORDERS & WHITE SHADOW)
+           ========================================= */
+        :root {
+            --bg: #ffffff;
+            /* 🟢 iOS Glass Light Theme 🟢 */
+            --bg-gradient: linear-gradient(135deg, #d1fae5 0%, #e0f2fe 50%, #f0fdf4 100%);
+            --fg: #0f172a; 
+            --card: rgba(255, 255, 255, 0.4); 
+            --glass-grad: linear-gradient(135deg, rgba(255,255,255,0.6) 0%, rgba(255,255,255,0.2) 100%);
+            --glass-border: rgba(15, 23, 42, 0.15); /* Darker border for light mode visibility */
+            --primary: #059669; 
+            --primary-fg: #ffffff;
+            --primary-muted: rgba(5, 150, 105, 0.15);
+            --secondary: #d1fae5; 
+            --secondary-fg: #047857;
+            --muted: rgba(255, 255, 255, 0.3);
+            --muted-fg: #475569;
+            --border: rgba(15, 23, 42, 0.2); /* Stronger border contrast */ 
+            --modal-bg: rgba(255, 255, 255, 0.95);
+            --modal-overlay: rgba(15, 23, 42, 0.4);
+            
+            --today-border: #10b981;
+            --hover-cell-bg: rgba(16, 185, 129, 0.15);
+            
+            --radius-sm: 10px;
+            --radius-md: 14px;
+            --radius-lg: 18px;
+            --radius-xl: 24px;
+            
+            --shadow-soft: 0 8px 32px rgba(31, 38, 135, 0.07);
+            --shadow-glow: 0 8px 25px rgba(16, 185, 129, 0.25);
+            
+            font-family: 'Inter', sans-serif;
+        }
+
+        /* 🟢 iOS Glass Dark Theme 🟢 */
+        [data-theme="dark"] {
+            --bg: #020617;
+            --bg-gradient: linear-gradient(135deg, #022c22 0%, #064e3b 50%, #020617 100%);
+            --fg: #f8fafc; 
+            --card: rgba(15, 23, 42, 0.4); 
+            --glass-grad: linear-gradient(135deg, rgba(15,23,42,0.6) 0%, rgba(15,23,42,0.2) 100%);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --primary: #10b981; 
+            --primary-fg: #ffffff;
+            --primary-muted: rgba(16, 185, 129, 0.2); 
+            --secondary: #064e3b; 
+            --secondary-fg: #34d399;
+            --muted: rgba(30, 41, 59, 0.3); 
+            --muted-fg: #94a3b8; 
+            --border: rgba(255, 255, 255, 0.1); 
+            --modal-bg: var(--glass-grad);
+            --modal-overlay: rgba(0, 0, 0, 0.7);
+            
+            --today-border: #34d399;
+            --hover-cell-bg: rgba(16, 185, 129, 0.15);
+
+            --shadow-soft: 0 8px 32px rgba(0, 0, 0, 0.4);
+            --shadow-glow: 0 8px 25px rgba(16, 185, 129, 0.35);
+        }
+
+        /* =========================================
+           GLOBAL STYLES
+           ========================================= */
+        body {
+            background-color: var(--bg-gradient); /* Fallback */
+            background-image: var(--bg-gradient);
+            background-attachment: fixed;
+            background-size: cover;
+            color: var(--fg);
+            margin: 0; padding: 0;
+            transition: background-color 0.3s ease, color 0.3s ease;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .container { 
+            max-width: 1100px; 
+            margin: 15px auto; 
+            padding: env(safe-area-inset-top) calc(16px + env(safe-area-inset-right)) env(safe-area-inset-bottom) calc(16px + env(safe-area-inset-left)); 
+        }
+
+        @keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes pulseGlow { 0% { box-shadow: inset 0 0 0px var(--today-border); } 50% { box-shadow: inset 0 0 8px var(--today-border); } 100% { box-shadow: inset 0 0 0px var(--today-border); } }
+        
+        .animate { animation: fadeUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards; opacity: 0; }
+        .delay-1 { animation-delay: 0.1s; }
+        .delay-2 { animation-delay: 0.2s; }
+        .delay-3 { animation-delay: 0.3s; }
+
+        /* ========= HEADER ========= */
+        .header {
+            background: var(--glass-grad); padding: 20px 24px; border-radius: var(--radius-xl);
+            box-shadow: var(--shadow-soft); 
+            border: 1px solid var(--glass-border);
+            -webkit-backdrop-filter: blur(16px) saturate(180%);
+            backdrop-filter: blur(16px) saturate(180%);
+            display: flex; flex-direction: column; gap: 16px; margin-bottom: 24px; position: relative; z-index: 50;
+        }
+
+        .title-area { width: 100%; text-align: center; }
+        .title-area h1 { margin: 0; font-size: clamp(1.2rem, 5vw, 1.6rem); color: var(--primary); font-weight: 900; letter-spacing: -0.5px; }
+        .title-area p { margin: 4px 0 0 0; font-size: 0.9rem; color: var(--muted-fg); font-weight: 700; text-transform: uppercase; letter-spacing: 1px;}
+
+        .header-bottom { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; padding-top: 16px; border-top: 1.5px dashed var(--border); }
+        .live-clock { font-size: 0.85rem; font-weight: 700; color: var(--primary); background: var(--primary-muted); padding: 10px 16px; border-radius: var(--radius-md); display: inline-flex; align-items: center; gap: 8px; flex-wrap: wrap; margin: 0; border: 1.5px solid var(--primary-muted); }
+        
+        .action-btns { display: flex !important; flex-direction: row !important; gap: 10px !important; align-items: center; flex-wrap: nowrap !important; }
+        .btn-icon { background: var(--muted); color: var(--fg); border: 1.5px solid var(--border); width: 44px !important; height: 44px !important; border-radius: var(--radius-md) !important; cursor: pointer; transition: 0.2s; display: flex !important; align-items: center !important; justify-content: center !important; flex-shrink: 0 !important; }
+        .btn-icon:hover { transform: scale(1.05); background: var(--primary); color: var(--primary-fg); box-shadow: var(--shadow-glow); border-color: var(--primary); }
+
+        /* ========= TABLE ========= */
+        .table-wrapper { background: var(--glass-grad); border-radius: var(--radius-xl); box-shadow: var(--shadow-soft); border: 1px solid var(--glass-border); -webkit-backdrop-filter: blur(16px) saturate(180%); backdrop-filter: blur(16px) saturate(180%); overflow-x: auto; margin-bottom: 25px; scroll-behavior: smooth; position: relative; z-index: 10; padding: 4px; }
+        .table-wrapper::-webkit-scrollbar { height: 8px; }
+        .table-wrapper::-webkit-scrollbar-track { background: transparent; }
+        .table-wrapper::-webkit-scrollbar-thumb { background: rgba(16, 185, 129, 0.3); border-radius: var(--radius-md); }
+
+        table { width: 100%; min-width: 950px; border-collapse: separate; border-spacing: 6px; text-align: center; table-layout: fixed; }
+        
+        /* 🟢 True Glass Cells 🟢 */
+        th, td { padding: 12px 8px; border-radius: var(--radius-md); transition: 0.3s; border: 1px solid var(--glass-border); }
+        
+        th { background: var(--muted); color: var(--fg); font-weight: 800; padding: 16px 8px; font-size: 0.95rem; cursor: pointer; text-transform: uppercase; letter-spacing: 1px; box-shadow: 0 4px 10px rgba(0,0,0,0.03); }
+        th:hover { background: var(--primary-muted); color: var(--primary); border-color: var(--primary);} 
+        
+        .time-header { width: 110px; background: var(--primary) !important; color: var(--primary-fg) !important; cursor: default; border-color: var(--primary) !important; box-shadow: var(--shadow-glow); }
+        .time-header:hover { transform: none; }
+        .time-col { width: 110px; background: var(--muted); color: var(--fg); white-space: normal; line-height: 1.3; box-shadow: 0 4px 10px rgba(0,0,0,0.03); }
+        
+        .filled-cell { cursor: pointer; background: var(--card); border: 1px solid var(--glass-border); box-shadow: 0 4px 10px rgba(0,0,0,0.03); }
+        .filled-cell:hover { background: var(--hover-cell-bg); border-color: var(--primary); box-shadow: var(--shadow-glow); transform: translateY(-2px); }
+        .empty-cell { background: rgba(0,0,0,0.02); color: var(--muted-fg); font-weight: 600; font-size: 1.1rem; pointer-events: none; border: 1px dashed var(--border);}
+
+        .highlight-col-bg { background-color: var(--primary-muted) !important; border-color: var(--primary-muted) !important;}
+        th.highlight-today { background: var(--primary) !important; color: var(--primary-fg) !important; box-shadow: var(--shadow-glow); border-color: var(--primary) !important; animation: pulseGlow 2.5s infinite alternate; }
+
+        @keyframes livePulse { 0% { box-shadow: inset 0 0 0px var(--primary); } 50% { box-shadow: inset 0 0 15px var(--primary); } 100% { box-shadow: inset 0 0 0px var(--primary); } }
+        .live-cell { background: var(--hover-cell-bg) !important; border-color: var(--primary) !important; animation: livePulse 2s infinite; position: relative; }
+        .live-cell::after { content: 'LIVE'; position: absolute; top: -8px; right: -8px; background: var(--primary); color: var(--primary-fg); font-size: 0.6rem; font-weight: 900; padding: 2px 6px; border-radius: 8px; box-shadow: var(--shadow-glow); }
+
+        .sub-name { font-weight: 800; color: var(--primary); font-size: 0.85rem; line-height: 1.3; margin-bottom: 6px; display: block;}
+        
+        .room-no { font-size: 0.7rem; background: var(--primary-muted); color: var(--primary); border: 1.5px solid currentColor; padding: 4px 10px; border-radius: var(--radius-md); font-weight: 800; display: inline-block; margin-top: 4px; }
+
+        .today-btn-wrapper { text-align: center; margin-bottom: 40px; }
+        .btn-large { background: var(--primary); color: var(--primary-fg); border: none; padding: 16px 32px; border-radius: var(--radius-md); font-weight: 800; cursor: pointer; font-size: 1.1rem; display: inline-flex; align-items: center; gap: 8px; transition: 0.3s; box-shadow: var(--shadow-glow); }
+        .btn-large:hover { transform: translateY(-4px); }
+
+        /* ========= TEACHER GRID ========= */
+        .section-title { text-align: center; color: var(--fg); font-size: 1.3rem; font-weight: 800; margin-bottom: 24px; letter-spacing: -0.5px;}
+        .section-title span { color: var(--primary); }
+        
+        .teacher-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; margin-bottom: 40px; }
+        .card { background: var(--glass-grad); padding: 20px; border-radius: var(--radius-lg); border: 1px solid var(--glass-border); box-shadow: var(--shadow-soft); -webkit-backdrop-filter: blur(16px) saturate(180%); backdrop-filter: blur(16px) saturate(180%); cursor: pointer; transition: 0.3s; position: relative; }
+        .card:hover { transform: translateY(-4px); border-color: var(--primary); box-shadow: var(--shadow-glow); }
+        body.dark .card:hover { box-shadow: var(--shadow-glow); }
+        .card h3 { margin: 0 0 6px 0; color: var(--fg); font-size: 1.1rem; font-weight: 800; padding-right: 40px; }
+        .card .desig { font-size: 0.85rem; font-weight: 700; margin-bottom: 12px; color: var(--primary); }
+        .card .details { font-size: 0.8rem; font-weight: 600; color: var(--muted-fg); display: flex; align-items: center; gap: 6px; }
+
+        /* ========= FIXED PERFECT MODAL ========= */
+        .modal {
+            position: fixed; inset: 0; 
+            background: var(--modal-overlay); display: none; align-items: center; justify-content: center;
+            z-index: 2000; backdrop-filter: blur(8px); opacity: 0; transition: opacity 0.3s ease; padding: 16px;
+        }
+        .modal.show { opacity: 1; }
+        
+        .modal-content {
+            background: var(--modal-bg); padding: 24px; border-radius: var(--radius-xl); border: 1px solid var(--glass-border);
+            -webkit-backdrop-filter: blur(20px) saturate(200%); backdrop-filter: blur(20px) saturate(200%);
+            max-width: 420px; width: 100%; position: relative; text-align: center;
+            box-shadow: 0 24px 50px rgba(0,0,0,0.4); transform: translateY(30px); transition: transform 0.3s ease;
+            max-height: 85vh; overflow-y: auto; margin: auto; 
+        }
+        .modal-content::-webkit-scrollbar { width: 4px; }
+        .modal-content::-webkit-scrollbar-thumb { background: rgba(255, 92, 0, 0.3); border-radius: var(--radius-md); }
+        .modal.show .modal-content { transform: translateY(0); }
+        
+        .modal-close { position: absolute; top: 16px; right: 16px; cursor: pointer; color: var(--muted-fg); background: var(--muted); border-radius: var(--radius-sm); padding: 6px; transition: 0.2s; z-index: 10; border: none; display: flex; align-items: center; justify-content: center;}
+        .modal-close:hover { background: var(--destructive-muted); color: var(--destructive); transform: rotate(90deg); }
+
+        .modal-btns { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; margin-top: 24px; }
+        .m-btn { padding: 14px 16px; border-radius: var(--radius-md); border: none; font-weight: 800; font-size: 0.95rem; display: flex; align-items: center; gap: 8px; cursor: pointer; transition: 0.2s; flex: 1; min-width: 100px; justify-content: center; }
+        .btn-call { background: var(--primary); color: var(--primary-fg); box-shadow: var(--shadow-glow);}
+        .btn-call:active { transform: scale(0.95); }
+        .btn-save { background: var(--primary-muted); color: var(--primary); border: 1.5px solid var(--primary-muted); }
+        .btn-share { background: var(--card); color: var(--fg); border: 1.5px solid var(--border); }
+
+        .teacher-link { color: var(--primary); text-decoration: underline; cursor: pointer; font-weight: 800; transition: 0.2s; }
+        .teacher-link:hover { opacity: 0.7; }
+
+        .classes-list-container { max-height: 60vh; overflow-y: auto; background: var(--muted); border-radius: var(--radius-lg); padding: 8px; border: 1.5px solid var(--border); }
+        .classes-list-container::-webkit-scrollbar { width: 4px; }
+        .classes-list-container::-webkit-scrollbar-thumb { background: rgba(255, 92, 0, 0.3); border-radius: var(--radius-md); }
+
+        .day-class-item { text-align: left; padding: 16px; border: 1.5px solid var(--border); display: flex; gap: 16px; align-items: center; cursor: pointer; transition: 0.2s; border-radius: var(--radius-md); margin-bottom: 8px; background: var(--card); box-shadow: var(--shadow-soft); }
+        .day-class-item:hover { border-color: var(--primary-muted); transform: translateY(-2px); }
+        .day-class-item:last-child { margin-bottom: 0; }
+
+        .toast-notification { visibility: hidden; min-width: 250px; background-color: var(--fg); color: var(--bg); text-align: center; border-radius: var(--radius-md); padding: 16px 24px; position: fixed; z-index: 3000; left: 50%; bottom: 40px; transform: translateX(-50%) translateY(20px); opacity: 0; display: flex; align-items: center; justify-content: center; gap: 10px; font-weight: 800; font-size: 14px; box-shadow: var(--shadow-glow); transition: 0.3s ease; }
+        .toast-notification.show { visibility: visible; opacity: 1; transform: translateX(-50%) translateY(0); }
+
+        footer { padding: 40px 0; border-top: 1.5px dashed var(--border); text-align: center; margin-top: 20px; }
+        .social-icons { display: flex; justify-content: center; gap: 16px; margin: 20px 0; }
+        .s-icon { width: 48px; height: 48px; background: var(--muted); color: var(--fg); border-radius: var(--radius-md); display: flex; align-items: center; justify-content: center; text-decoration: none; transition: 0.2s; border: 1.5px solid var(--border);}
+        .s-icon:hover { background: var(--primary); color: var(--primary-fg); box-shadow: var(--shadow-glow); border-color: var(--primary); transform: translateY(-4px);}
+
+        
+        /* Pro Features CSS */
+        .countdown-banner {
+            font-size: 0.85rem; font-weight: 800; color: var(--primary);
+            background: var(--primary-muted); padding: 6px 12px; border-radius: 20px;
+            display: inline-flex; align-items: center; gap: 6px; margin-top: 8px;
+            animation: fadeIn 0.3s ease; border: 1px solid var(--primary-muted);
+        }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(-5px); } to { opacity: 1; transform: translateY(0); } }
+        .search-container {
+            position: relative; margin: 12px 10px; width: 100%; max-width: 250px;
+        }
+        .search-container input {
+            width: 100%; padding: 10px 16px 10px 36px; border-radius: 20px;
+            border: 1px solid var(--glass-border); background: var(--card); color: var(--fg);
+            font-family: 'Inter', sans-serif; font-size: 0.9rem;
+            outline: none; transition: 0.3s;
+        }
+        .search-container input:focus { border-color: var(--primary); box-shadow: var(--shadow-glow); }
+        .search-icon { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--muted-fg); font-size: 18px; }
+        .dimmed-cell { opacity: 0.15 !important; filter: grayscale(100%); pointer-events: none; }
+        .highlighted-search-cell { box-shadow: var(--shadow-glow); border: 2px solid var(--primary) !important; transform: scale(1.02); z-index: 10; background: var(--hover-cell-bg) !important; }
+        
+        /* Ripple Effect */
+        .ripple {
+            position: absolute; border-radius: 50%; transform: scale(0);
+            animation: ripple-anim 0.6s linear; background: rgba(255, 255, 255, 0.4);
+            pointer-events: none;
+        }
+        [data-theme="dark"] .ripple { background: rgba(255, 255, 255, 0.2); }
+        @keyframes ripple-anim { to { transform: scale(4); opacity: 0; } }
+        
+        .theme-picker { display: flex; gap: 10px; justify-content: center; margin-top: 20px; flex-wrap: wrap; }
+        .color-dot { width: 36px; height: 36px; border-radius: 50%; cursor: pointer; transition: 0.2s; border: 2px solid transparent; }
+        .color-dot:hover { transform: scale(1.1); }
+        .color-dot.active { border-color: var(--fg); box-shadow: 0 0 10px currentColor; }
+
+        /* Mobile specific adjustments */
+        @media (max-width: 767px) {
+            .container { 
+                margin: 8px auto; 
+                padding: max(8px, env(safe-area-inset-top)) max(8px, env(safe-area-inset-right)) max(8px, env(safe-area-inset-bottom)) max(8px, env(safe-area-inset-left)); 
+            }
+            .header { padding: 16px; }
+            .header-bottom { justify-content: center; }
+            .live-clock { width: 100%; justify-content: center; }
+            .teacher-grid { grid-template-columns: 1fr; }
+
+    </style>
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2310b981'><path d='M19 4h-1V2h-2v2H8V2H6v2H5c-1.11 0-1.99.9-1.99 2L3 20c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2z'/></svg>">
+    <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2310b981'><path d='M19 4h-1V2h-2v2H8V2H6v2H5c-1.11 0-1.99.9-1.99 2L3 20c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2z'/></svg>">
+
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('sw.js')
+        .then(reg => console.log('Service Worker Registered'))
+        .catch(err => console.log('Registration Failed', err));
+    });
+  }
+</script>
+</head>
+<body data-theme="dark">
+
+    <div class="container">
+        <header class="header animate">
+            <div class="title-area">
+                <h1 class="header-title">CNPI Routine Pro | ENT-3/2</h1>
+                <p class="header-subtitle">Electronics Technology (ENT-3/2)</p>
+            </div>
+            
+            <div class="header-bottom">
+                <div style="display:flex; flex-direction:column; align-items:center;">
+                    <div class="live-clock">
+                        <span class="material-icons-round" style="font-size:18px;">calendar_month</span> 
+                        <span id="date-display">--</span>
+                        <span style="opacity: 0.3; margin:0 4px; color: var(--fg);">|</span>
+                        <span class="material-icons-round" style="font-size:18px;">schedule</span> 
+                        <span id="time-display">--:--:--</span>
+                    </div>
+                    <div id="countdown-banner" class="countdown-banner" style="display:none;"></div>
+                </div>
+                
+                <div class="action-btns">
+                    <button onclick="shareApp()" class="btn-icon ripple-target" title="Copy Link"><span class="material-icons-round">content_copy</span></button>
+                    <button onclick="openThemePicker()" class="btn-icon ripple-target" title="Color Theme"><span class="material-icons-round">palette</span></button>
+                    <button onclick="downloadRoutine()" class="btn-icon ripple-target" title="Download Routine"><span class="material-icons-round">download</span></button>
+                    <button onclick="toggleView()" class="btn-icon ripple-target" title="Desktop View"><span class="material-icons-round" id="view-icon">desktop_windows</span></button>
+                    <button onclick="toggleTheme()" class="btn-icon ripple-target" title="Toggle Theme"><span class="material-icons-round">dark_mode</span></button>
+                </div>
+            </div>
+        </header>
+
+        <div class="table-wrapper animate delay-1" id="table-scroll">
+            <table id="main-routine-table">
+                <thead><tr id="table-head"><th class="time-header" style="width:120px;">Time</th></tr></thead>
+                <tbody id="table-body"></tbody>
+            </table>
+        </div>
+
+        <div class="today-btn-wrapper animate delay-2">
+            <button class="btn-large" onclick="showClassesByDay('Today')"><span class="material-icons-round">event_note</span> See Today's Classes</button>
+        </div>
+
+        <h2 class="section-title animate delay-3">Faculty <span>&</span> Subject Info</h2>
+        <div class="teacher-grid animate delay-3" id="teacher-container"></div>
+
+        <footer class="animate delay-3">
+            <div style="font-weight:700; font-size: 0.95rem; color: var(--fg);">Developed with ❤️ by <a href="https://mhmahim.me" target="_blank" style="color:var(--primary); text-decoration:none; font-weight: 800;">M. H. Mahim</a></div>
+            <div class="social-icons">
+                <a href="https://facebook.com/m.h.mahim.facebook" target="_blank" class="s-icon"><span class="material-icons-round">facebook</span></a>
+                <a href="https://mhmahim.me" target="_blank" class="s-icon"><span class="material-icons-round">language</span></a>
+                <a href="https://github.com/mh-mahim" target="_blank" class="s-icon">
+                    <svg viewBox="0 0 24 24" fill="currentColor" style="width:20px; height:20px;"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>
+                </a>
+            </div>
+            <div style="font-size:0.8rem; font-weight: 600; color: var(--muted-fg);">© 2026 CNPI ENT-3/2. All Rights Reserved.</div>
+        </footer>
+    </div>
+
+    <!-- THEME PICKER MODAL -->
+    <div id="theme-modal" class="modal" onclick="if(event.target===this) closeThemePicker()">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeThemePicker()"><span class="material-icons-round">close</span></button>
+            <h2 style="margin:0 0 10px 0; color:var(--fg); font-weight:900;">Choose Accent Color</h2>
+            <p style="color:var(--muted-fg); font-size:0.9rem; margin-top:0;">Personalize your routine experience</p>
+            <div class="theme-picker" id="color-picker-container">
+                <!-- Color dots added via JS -->
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="global-modal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeModal()"><span class="material-icons-round">close</span></button>
+            <div id="modal-body"></div>
+        </div>
+    </div>
+
+    <div id="toast" class="toast-notification">
+        <span class="material-icons-round" id="toast-icon">check_circle</span>
+        <span id="toast-message">Successfully!</span>
+    </div>
+
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('sw.js').then(reg => {
+                    console.log('Service Worker Active!');
+                }).catch(err => {
+                    console.log('SW Registration Failed', err);
+                });
+            });
+        }
+    </script>
+
+    <script>
+        const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday"];
+        const periods = [
+            { id: 1, name: "1st", time: "01:30 PM - 02:15 PM" },
+            { id: 2, name: "2nd", time: "02:15 PM - 03:00 PM" },
+            { id: 3, name: "3rd", time: "03:00 PM - 03:45 PM" },
+            { id: 4, name: "4th", time: "03:45 PM - 04:30 PM" },
+            { id: 5, name: "5th", time: "04:30 PM - 05:15 PM" },
+            { id: 6, name: "6th", time: "05:15 PM - 06:00 PM" },
+            { id: 7, name: "7th", time: "06:00 PM - 06:45 PM" }
+        ];
+
+        const routineData = [
+            { day: "Sunday", period: 1, sub: "Electrical Circuits-II", code: "MAS", room: "EWM" },
+            { day: "Sunday", period: 2, sub: "Electrical Circuits-II", code: "MAS", room: "EWM" },
+            { day: "Sunday", period: 3, sub: "Physics-II", code: "AQZ", room: "S-316" },
+            { day: "Sunday", period: 4, sub: "Digital Ent-1", code: "MR", room: "S-316" },
+            { day: "Sunday", period: 5, sub: "Computer App", code: "MHR", room: "Software Lab" },
+            { day: "Sunday", period: 6, sub: "Computer App", code: "MHR", room: "Software Lab" },
+            
+            { day: "Monday", period: 1, sub: "Digital Ent-1", code: "MR", room: "Digital Ent" },
+            { day: "Monday", period: 2, sub: "Digital Ent-1", code: "MR", room: "Digital Ent" },
+            { day: "Monday", period: 3, sub: "Electrical Circuits-II", code: "MAS", room: "S-316" },
+            { day: "Monday", period: 4, sub: "Power Electronics", code: "DS", room: "S-316" },
+            { day: "Monday", period: 5, sub: "Mathematics-III", code: "MA", room: "S-316" },
+
+            { day: "Tuesday", period: 1, sub: "Power Electronics", code: "DS", room: "S-316" },
+            { day: "Tuesday", period: 2, sub: "Digital Ent-1", code: "MR", room: "S-316" },
+            { day: "Tuesday", period: 3, sub: "Mathematics-III", code: "MA", room: "S-316" },
+            { day: "Tuesday", period: 4, sub: "Mathematics-III", code: "MA", room: "S-316" },
+            { day: "Tuesday", period: 5, sub: "Physics-II", code: "AQZ", room: "S-316" },
+
+            { day: "Wednesday", period: 1, sub: "Electrical Circuits-II", code: "MAS", room: "S-316" },
+            { day: "Wednesday", period: 2, sub: "Physics-II", code: "AQZ", room: "S-316" },
+            { day: "Wednesday", period: 3, sub: "Power Electronics", code: "DS", room: "Basic Ent Lab" },
+            { day: "Wednesday", period: 4, sub: "Power Electronics", code: "DS", room: "Basic Ent Lab" },
+            { day: "Wednesday", period: 5, sub: "Mathematics-III", code: "MA", room: "S-316" },
+
+            { day: "Thursday", period: 1, sub: "Computer App", code: "MHR", room: "Software Lab" },
+            { day: "Thursday", period: 2, sub: "Computer App", code: "MHR", room: "Software Lab" },
+            { day: "Thursday", period: 3, sub: "Mathematics-III", code: "MA", room: "S-316" },
+            { day: "Thursday", period: 4, sub: "Electrical Circuits-II", code: "MAS", room: "S-316" },
+            { day: "Thursday", period: 5, sub: "Physics-II", code: "AQZ", room: "Physics Lab" },
+            { day: "Thursday", period: 6, sub: "Physics-II", code: "AQZ", room: "Physics Lab" }
+        ];
+
+        const teacherData = [
+            { name: "Md. Delowar Syed", code: "DS", sub: "Power Electronics (26832)", phone: "01776895558", desig: "Jr. Instructor (Tech/Electronics)" },
+            { name: "Mahabubul Alam", code: "MA", sub: "Mathematics-III (25931)", phone: "01745867997", desig: "Jr. Instructor (Non-Tech/Math)" },
+            { name: "Md. Abdul Quader Zilani", code: "AQZ", sub: "Physics-II (25922)", phone: "01717928560", desig: "Instructor (Non-Tech/Physics)" },
+            { name: "Md. Halim Reja", code: "MHR", sub: "Computer Office Application (28511)", phone: "01717701784", desig: "Instructor (Tech/Electronics)" },
+            { name: "Md. Abdus Salam", code: "MAS", sub: "Electrical Circuits-II (26731)", phone: "01763248085", desig: "Jr. Instructor (Tech/Electrical)" },
+            { name: "Md. Masud Rana", code: "MR", sub: "Digital Electronics-1 (26831)", phone: "01766796427", desig: "Jr. Instructor (Tech/Electronics)" }
+        ];
+
+        
+        // --- PRO FEATURES ---
+        
+        // 1. Theme Colors
+        const colors = [
+            { id: 'emerald', light: '#059669', dark: '#10b981' },
+            { id: 'blue', light: '#2563eb', dark: '#3b82f6' },
+            { id: 'purple', light: '#7c3aed', dark: '#8b5cf6' },
+            { id: 'rose', light: '#e11d48', dark: '#f43f5e' },
+            { id: 'orange', light: '#ea580c', dark: '#f97316' }
+        ];
+        
+        let currentColorIndex = localStorage.getItem('routine-color') ? parseInt(localStorage.getItem('routine-color')) : 0;
+        
+        function applyColor(index) {
+            currentColorIndex = index;
+            localStorage.setItem('routine-color', index);
+            const color = colors[index];
+            const target = document.body;
+            const isDark = document.body.getAttribute('data-theme') === 'dark';
+            
+            target.style.setProperty('--primary', isDark ? color.dark : color.light);
+            target.style.setProperty('--primary-muted', isDark ? `${color.dark}26` : `${color.light}26`);
+            target.style.setProperty('--today-border', isDark ? color.dark : color.light);
+            // Re-render dots
+            renderColorDots();
+        }
+
+        function renderColorDots() {
+            const container = document.getElementById('color-picker-container');
+            if(!container) return;
+            container.innerHTML = '';
+            colors.forEach((c, idx) => {
+                const isDark = document.body.getAttribute('data-theme') === 'dark';
+                const dot = document.createElement('div');
+                dot.className = `color-dot ${idx === currentColorIndex ? 'active' : ''}`;
+                dot.style.backgroundColor = isDark ? c.dark : c.light;
+                dot.onclick = () => applyColor(idx);
+                container.appendChild(dot);
+            });
+        }
+        
+        function openThemePicker() {
+            renderColorDots();
+            const m = document.getElementById('theme-modal'); 
+            m.style.display = 'flex';
+            setTimeout(() => m.classList.add('show'), 10);
+        }
+        function closeThemePicker() {
+            const m = document.getElementById('theme-modal'); 
+            m.classList.remove('show');
+            setTimeout(() => m.style.display = 'none', 300);
+        }
+
+        // 2. Share API
+        function shareApp() {
+            if (navigator.share && window.location.protocol !== 'file:') {
+                navigator.share({
+                    title: 'CNPI Routine Pro',
+                    text: 'Check out our beautifully designed ENT-3/2 Class Routine!',
+                    url: window.location.href
+                }).catch(err => {
+                    navigator.clipboard.writeText(window.location.href);
+                    showToast("Link copied to clipboard!", "content_copy");
+                });
+            } else {
+                navigator.clipboard.writeText(window.location.href);
+                showToast("Link copied to clipboard!", "content_copy");
+            }
+        }
+
+        // 3. Search Highlights
+        function handleSearch() {
+            const query = document.getElementById('searchInput').value.toLowerCase().trim();
+            const cells = document.querySelectorAll('.filled-cell');
+            
+            if (query === '') {
+                cells.forEach(c => {
+                    c.classList.remove('highlighted-search-cell', 'dimmed-cell');
+                });
+                return;
+            }
+            
+            cells.forEach(c => {
+                const text = c.innerText.toLowerCase();
+                if (text.includes(query)) {
+                    c.classList.add('highlighted-search-cell');
+                    c.classList.remove('dimmed-cell');
+                } else {
+                    c.classList.add('dimmed-cell');
+                    c.classList.remove('highlighted-search-cell');
+                }
+            });
+        }
+
+        // 4. Ripple Effect logic
+        function createRipple(event) {
+            const button = event.currentTarget;
+            const circle = document.createElement("span");
+            const diameter = Math.max(button.clientWidth, button.clientHeight);
+            const radius = diameter / 2;
+            
+            const rect = button.getBoundingClientRect();
+            circle.style.width = circle.style.height = `${diameter}px`;
+            circle.style.left = `${event.clientX - rect.left - radius}px`;
+            circle.style.top = `${event.clientY - rect.top - radius}px`;
+            circle.classList.add("ripple");
+            
+            const existing = button.querySelector('.ripple');
+            if(existing) existing.remove();
+            
+            button.appendChild(circle);
+        }
+
+        function initRipples() {
+            document.querySelectorAll('.btn-icon, .btn-large, .filled-cell, .m-btn, .card').forEach(el => {
+                el.style.position = 'relative';
+                el.style.overflow = 'hidden';
+                el.addEventListener('click', createRipple);
+            });
+        }
+
+        function init() {
+            const head = document.getElementById('table-head');
+            const body = document.getElementById('table-body');
+            const teacherCont = document.getElementById('teacher-container');
+
+            days.forEach(day => {
+                const th = document.createElement('th');
+                th.id = `th-${day}`; th.textContent = day;
+                th.onclick = () => showClassesByDay(day);
+                th.title = `Click to view ${day}'s classes`;
+                head.appendChild(th);
+            });
+
+            const skipMap = {};
+
+            periods.forEach(p => {
+                const tr = document.createElement('tr');
+                const timeParts = p.time.split(' - ');
+                tr.innerHTML = `<td class="time-col">
+                    <div style="font-size:0.9rem; color:var(--primary); font-weight:800; margin-bottom:4px;">${p.name}</div>
+                    <div style="font-size:0.85rem; font-weight:700;">${timeParts[0]}</div>
+                    <div style="font-size:0.7rem; color:var(--muted-fg); margin:2px 0; font-weight:600;">to</div>
+                    <div style="font-size:0.85rem; font-weight:700;">${timeParts[1]}</div>
+                </td>`;
+                
+                days.forEach(day => {
+                    const key = `${day}-${p.id}`;
+                    if (skipMap[key]) return;
+
+                    const classInfo = routineData.find(r => r.day === day && r.period === p.id);
+                    const td = document.createElement('td');
+                    td.id = `cell-${day}-${p.id}`;
+                    
+                    if (classInfo) {
+                        let span = 1;
+                        for (let nextId = p.id + 1; nextId <= periods.length; nextId++) {
+                            const nextClass = routineData.find(r => r.day === day && r.period === nextId);
+                            if (nextClass && nextClass.sub === classInfo.sub && nextClass.code === classInfo.code) {
+                                span++; skipMap[`${day}-${nextId}`] = true;
+                            } else break;
+                        }
+
+                        if (span > 1) td.rowSpan = span;
+                        td.className = "filled-cell";
+                        td.innerHTML = `<div style="padding:4px;"><span class="sub-name">${classInfo.sub}</span><span style="font-size:0.75rem; font-weight:700; color:var(--muted-fg);">${classInfo.code}</span><br><span class="room-no">${classInfo.room}</span></div>`;
+                        td.onclick = () => showClassModal(classInfo, p.time);
+                    } else {
+                        td.className = "empty-cell"; td.textContent = "-";
+                    }
+                    tr.appendChild(td);
+                });
+                body.appendChild(tr);
+            });
+
+            teacherData.forEach(t => {
+                const card = document.createElement('div');
+                card.className = 'card';
+                card.innerHTML = `<div style="position:absolute; top:20px; right:20px; background:var(--muted); color:var(--primary); width:36px; height:36px; border-radius:50%; display:flex; align-items:center; justify-content:center; border: 1.5px solid var(--border);"><span class="material-icons-round" style="font-size:18px;">open_in_new</span></div>
+                                  <h3>${t.name}</h3>
+                                  <div class="desig">${t.sub}</div>
+                                  <div class="details"><span class="material-icons-round" style="font-size:16px;">phone_iphone</span> ${t.phone}</div>`;
+                card.onclick = () => showTeacherModal(t);
+                teacherCont.appendChild(card);
+            });
+
+            updateLiveClock();
+            updateHighlights();
+            setTimeout(triggerFullScroll, 1200);
+        }
+
+        function triggerFullScroll() {
+            const wrapper = document.getElementById('table-scroll');
+            const max = wrapper.scrollWidth - wrapper.clientWidth;
+            if (max > 0) {
+                wrapper.scrollTo({ left: max, behavior: 'smooth' });
+                setTimeout(() => wrapper.scrollTo({ left: 0, behavior: 'smooth' }), 1200);
+            }
+        }
+
+        function updateLiveClock() {
+            const now = new Date();
+            document.getElementById('date-display').textContent = now.toLocaleDateString('en-US', { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' });
+            document.getElementById('time-display').textContent = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true });
+        }
+        setInterval(updateLiveClock, 1000);
+
+        function parseTime(timeStr) {
+            const [time, modifier] = timeStr.trim().split(' ');
+            let [hours, minutes] = time.split(':');
+            hours = parseInt(hours, 10);
+            if (hours === 12 && modifier === 'AM') hours = 0;
+            if (modifier === 'PM' && hours < 12) hours += 12;
+            return hours * 60 + parseInt(minutes, 10);
+        }
+
+        function updateHighlights() {
+            const now = new Date();
+            const today = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"][now.getDay()];
+            const currentMinutes = now.getHours() * 60 + now.getMinutes();
+
+            document.querySelectorAll('th, td').forEach(el => el.classList.remove('highlight-col-bg', 'highlight-today', 'live-cell'));
+            
+            const banner = document.getElementById('countdown-banner');
+            let ongoingClass = null;
+            let nextClass = null;
+
+            if (days.includes(today)) {
+                const th = document.getElementById(`th-${today}`);
+                if (th) {
+                    th.classList.add('highlight-today');
+                    const dayIndex = Array.from(th.parentNode.children).indexOf(th);
+                    document.querySelectorAll(`#table-body tr`).forEach(tr => {
+                        const cell = tr.children[dayIndex];
+                        if (cell && cell.classList.contains('empty-cell')) {
+                            cell.classList.add('highlight-col-bg');
+                        }
+                    });
+                }
+
+                // Check for active period
+                periods.forEach(p => {
+                    const [startStr, endStr] = p.time.split(' - ');
+                    const startMins = parseTime(startStr);
+                    const endMins = parseTime(endStr);
+                    
+                    if (currentMinutes >= startMins && currentMinutes < endMins) {
+                        const cell = document.getElementById(`cell-${today}-${p.id}`);
+                        if (cell && cell.classList.contains('filled-cell')) {
+                            cell.classList.add('live-cell');
+                            ongoingClass = { endMins };
+                        }
+                    } else if (currentMinutes < startMins && !nextClass) {
+                        const cell = document.getElementById(`cell-${today}-${p.id}`);
+                        if (cell && cell.classList.contains('filled-cell')) {
+                            nextClass = { startMins };
+                        }
+                    }
+                });
+            }
+
+            if (banner) {
+                if (ongoingClass) {
+                    const minsLeft = ongoingClass.endMins - currentMinutes;
+                    banner.innerHTML = `<span class="material-icons-round" style="font-size:16px;">timelapse</span> ${minsLeft} min left in current class`;
+                    banner.style.display = 'inline-flex';
+                } else if (nextClass) {
+                    const minsUntil = nextClass.startMins - currentMinutes;
+                    banner.innerHTML = `<span class="material-icons-round" style="font-size:16px;">upcoming</span> Next class in ${minsUntil} min`;
+                    banner.style.display = 'inline-flex';
+                } else {
+                    banner.style.display = 'none';
+                }
+            }
+        }
+        setInterval(updateHighlights, 30000);
+
+        function openModal() {
+            const m = document.getElementById('global-modal'); 
+            m.style.display = 'flex';
+            setTimeout(() => m.classList.add('show'), 10);
+        }
+
+        function closeModal() {
+            const m = document.getElementById('global-modal'); 
+            m.classList.remove('show');
+            setTimeout(() => m.style.display = 'none', 300);
+        }
+
+        function openClassDetailsFromDay(day, periodId, timeStr) {
+            const classInfo = routineData.find(r => r.day === day && r.period === periodId);
+            if(classInfo) {
+                const modalContent = document.querySelector('.modal-content');
+                modalContent.style.transform = 'scale(0.95)';
+                modalContent.style.opacity = '0';
+                setTimeout(() => {
+                    showClassModal(classInfo, timeStr);
+                    modalContent.style.transform = 'translateY(0)';
+                    modalContent.style.opacity = '1';
+                }, 200);
+            }
+        }
+
+        function showClassModal(info, time) {
+            const t = teacherData.find(x => x.code === info.code);
+            document.getElementById('modal-body').innerHTML = `
+                <div style="width:50px; height:6px; background:var(--muted); border-radius:10px; margin:0 auto 20px;"></div>
+                <h2 style="color:var(--primary); margin:0 0 12px 0; font-size:1.6rem; font-weight:800;">Class Details</h2>
+                <div style="font-size:1.3rem; font-weight:800; color:var(--fg); margin-bottom:20px;">${info.sub}</div>
+                <div style="background:var(--muted); padding:20px; border-radius:var(--radius-lg); text-align:left; margin-bottom:20px; color:var(--fg); border: 1.5px solid var(--border);">
+                    <div style="font-weight: 600;"><span class="material-icons-round" style="vertical-align:middle; font-size:20px; color:var(--primary); margin-right: 6px;">person</span> <b>Teacher:</b> <span class="teacher-link" onclick="showTeacherModalByCode('${info.code}')">${t ? t.name : info.code}</span></div>
+                    <div style="margin-top:12px; font-weight: 600;"><span class="material-icons-round" style="vertical-align:middle; font-size:20px; color:var(--primary); margin-right: 6px;">room</span> <b>Room:</b> <span class="room-no" style="margin:0">${info.room}</span></div>
+                </div>
+                <div style="background:var(--primary-muted); color:var(--primary); padding:16px; border-radius:var(--radius-md); font-weight:800; font-size: 1rem; border: 1.5px solid var(--primary-muted);">
+                    <span class="material-icons-round" style="vertical-align:middle;">event</span> ${info.day} &bull; ${time}
+                </div>`;
+            openModal();
+        }
+
+        function showTeacherModalByCode(code) {
+            const t = teacherData.find(x => x.code === code);
+            if (t) {
+                const modalContent = document.querySelector('.modal-content');
+                modalContent.style.transform = 'scale(0.95)';
+                modalContent.style.opacity = '0';
+                setTimeout(() => {
+                    showTeacherModal(t);
+                    modalContent.style.transform = 'translateY(0)';
+                    modalContent.style.opacity = '1';
+                }, 200);
+            }
+        }
+
+        function showTeacherModal(t) {
+            document.getElementById('modal-body').innerHTML = `
+                <div style="width:50px; height:6px; background:var(--muted); border-radius:10px; margin:0 auto 16px;"></div>
+                <h2 style="color:var(--primary); margin:0; font-weight: 900;">Teacher Profile</h2>
+                <div style="font-size:1.4rem; font-weight:800; margin-top:12px; color:var(--fg);">${t.name}</div>
+                <div style="font-weight:700; color:var(--primary); margin-top: 4px;">${t.sub}</div>
+                <div style="font-size:0.85rem; font-weight:600; color:var(--muted-fg); margin-bottom:24px; margin-top: 6px;">${t.desig}</div>
+                
+                <div style="position:relative; display:flex; align-items:center; justify-content:center; background:var(--primary-muted); padding:16px 20px; border-radius:var(--radius-md); border:1.5px solid var(--primary-muted);">
+                    <div style="display:flex; align-items:center; gap:8px; font-weight:800; font-size:1.25rem; color:var(--primary);">
+                        <span class="material-icons-round">phone</span> ${t.phone}
+                    </div>
+                    <div onclick="copyPhone('${t.phone}')" style="position:absolute; right:16px; background:var(--primary); color:#fff; padding:8px; border-radius:12px; cursor:pointer; display:flex; transition:0.2s; box-shadow: var(--shadow-glow);" title="Copy">
+                        <span class="material-icons-round" style="font-size:18px;">content_copy</span>
+                    </div>
+                </div>
+
+                <div class="modal-btns">
+                    <button class="m-btn btn-call" onclick="window.location.href='tel:${t.phone}'"><span class="material-icons-round">call</span> Call</button>
+                    <button class="m-btn btn-save" onclick="saveVCard('${t.name}', '${t.phone}')"><span class="material-icons-round">person_add</span> Save</button>
+                    <button class="m-btn btn-share" onclick="shareTeacher('${t.name}', '${t.phone}')"><span class="material-icons-round">share</span> Share</button>
+                </div>`;
+            openModal();
+        }
+
+        function showClassesByDay(dayReq) {
+            let targetDay = dayReq;
+            let displayTitle = dayReq;
+
+            if (dayReq === 'Today') {
+                targetDay = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"][new Date().getDay()];
+                displayTitle = `Today's Classes <br><span style="font-size:1.1rem; color:var(--muted-fg); font-weight:700;">(${targetDay})</span>`;
+            } else {
+                displayTitle = `${targetDay}'s Classes`;
+            }
+
+            const classes = routineData.filter(r => r.day === targetDay);
+            let html = "";
+            
+            if (classes.length > 0) {
+                const uniqueClasses = [];
+                let skipNext = 0;
+                
+                classes.forEach((c, index) => {
+                    if (skipNext > 0) { skipNext--; return; }
+                    
+                    let span = 1;
+                    for (let i = index + 1; i < classes.length; i++) {
+                        if (classes[i].sub === c.sub && classes[i].code === c.code) span++; else break;
+                    }
+                    skipNext = span - 1;
+
+                    const startP = periods.find(x => x.id === c.period);
+                    const endP = periods.find(x => x.id === (c.period + span - 1));
+                    
+                    let timeStr = span > 1 ? `${startP.time.split(' - ')[0]} - ${endP.time.split(' - ')[1]}` : startP.time;
+                    let periodStr = span > 1 ? `${startP.name} to ${endP.name}` : startP.name;
+
+                    html += `<div class="day-class-item" onclick="openClassDetailsFromDay('${targetDay}', ${c.period}, '${timeStr}')">
+                        <div style="background:var(--primary-muted); color:var(--primary); padding:10px; border-radius:12px; font-weight:800; min-width:90px; text-align:center; font-size:0.8rem; border: 1.5px solid var(--primary-muted);">
+                            ${periodStr}<br><span style="font-size:0.65rem; color:var(--fg); margin-top:4px; display:block;">${timeStr}</span>
+                        </div>
+                        <div style="flex:1;">
+                            <div style="font-weight:800; color:var(--fg); font-size:1rem;">${c.sub}</div>
+                            <div style="font-size:0.85rem; font-weight:600; color:var(--muted-fg); margin-top:4px;">${c.code} &bull; ${c.room}</div>
+                        </div>
+                        <div style="color: var(--primary); opacity: 0.8; background: var(--muted); padding: 4px; border-radius: 50%;">
+                            <span class="material-icons-round">chevron_right</span>
+                        </div>
+                    </div>`;
+                });
+            } else html = `<div style='padding:40px 20px; text-align:center;'><span class="material-icons-round" style="font-size:60px; color:var(--muted-fg); margin-bottom: 16px;">celebration</span><h3 style="color:var(--primary); margin:0; font-weight:900; font-size:1.5rem;">No classes!</h3><p style="font-size:1rem; color:var(--muted-fg); font-weight: 600; margin-top:8px;">Enjoy your day off.</p></div>`;
+
+            document.getElementById('modal-body').innerHTML = `
+                <div style="width:50px; height:6px; background:var(--muted); border-radius:10px; margin:0 auto 20px;"></div>
+                <h2 style="color:var(--primary); margin:0 0 20px 0; font-weight: 900; line-height: 1.3;">${displayTitle}</h2>
+                <div class="classes-list-container">${html}</div>`;
+            openModal();
+        }
+
+        function showToast(msg, icon = 'check_circle') {
+            const t = document.getElementById("toast"); 
+            document.getElementById("toast-message").textContent = msg;
+            document.getElementById("toast-icon").textContent = icon;
+            t.classList.add("show"); setTimeout(() => t.classList.remove("show"), 3000);
+        }
+
+        function copyPhone(num) { navigator.clipboard.writeText(num).then(() => showToast("Number Copied!")); }
+
+        function shareTeacher(name, num) {
+            const txt = `Teacher: ${name}\nPhone: ${num}`;
+            if (navigator.share) navigator.share({ title: 'Contact', text: txt }); else copyPhone(txt);
+        }
+
+        function saveVCard(name, phone) {
+            const v = `BEGIN:VCARD\nVERSION:3.0\nFN:${name}\nTEL:${phone}\nEND:VCARD`;
+            const blob = new Blob([v], { type: "text/vcard" });
+            const a = document.createElement("a"); a.href = URL.createObjectURL(blob);
+            a.download = `${name.replace(/\s/g, '_')}.vcf`; a.click();
+            showToast("VCard Downloaded!");
+        }
+
+        function applyTimeBasedTheme() {
+            const hour = new Date().getHours();
+            // 6am to 5pm (17) is Light. Else Dark.
+            if (hour >= 6 && hour < 17) {
+                document.body.removeAttribute('data-theme');
+            } else {
+                document.body.setAttribute('data-theme', 'dark');
+            }
+        }
+
+        function toggleTheme() {
+            const body = document.body;
+            if (body.getAttribute('data-theme') === 'dark') {
+                body.removeAttribute('data-theme');
+            } else {
+                body.setAttribute('data-theme', 'dark');
+            }
+            applyColor(currentColorIndex);
+        }
+
+        function toggleView() {
+            const vp = document.getElementById("viewport-meta");
+            const icon = document.getElementById("view-icon");
+            if (vp.content.includes("width=1024")) {
+                vp.content = "width=device-width, initial-scale=1.0, viewport-fit=cover";
+                icon.textContent = "desktop_windows";
+            } else {
+                vp.content = "width=1024, viewport-fit=cover";
+                icon.textContent = "phone_iphone";
+            }
+        }
+
+        function downloadRoutine() {
+            showToast("Generating image...", "hourglass_empty");
+            const originalTable = document.querySelector('table');
+            const isDark = document.body.getAttribute('data-theme') === 'dark';
+            
+            // Create a temporary wrapper to hold the title and table
+            const wrapper = document.createElement('div');
+            wrapper.style.padding = '24px';
+            wrapper.style.background = isDark ? '#022c22' : '#e0f2fe';
+            wrapper.style.borderRadius = '16px';
+            wrapper.style.display = 'inline-block';
+            
+            // Create title
+            const titleDiv = document.createElement('div');
+            titleDiv.innerHTML = `
+                <h1 style="margin: 0; font-size: 28px; color: ${isDark ? '#10b981' : '#059669'}; font-family: 'Inter', sans-serif; font-weight: 900;">CNPI Routine Pro</h1>
+                <p style="margin: 6px 0 20px 0; font-size: 14px; color: ${isDark ? '#94a3b8' : '#475569'}; font-family: 'Inter', sans-serif; font-weight: 800; text-transform: uppercase; letter-spacing: 1px;">ENT -3/2 &bull; By M. H. Mahim</p>
+            `;
+            titleDiv.style.textAlign = 'center';
+            
+            // Replace the table with the wrapper in the DOM temporarily
+            const parent = originalTable.parentNode;
+            parent.replaceChild(wrapper, originalTable);
+            wrapper.appendChild(titleDiv);
+            wrapper.appendChild(originalTable);
+
+            setTimeout(() => {
+                html2canvas(wrapper, { 
+                    scale: 2,
+                    backgroundColor: isDark ? '#022c22' : '#e0f2fe',
+                    logging: false
+                }).then(canvas => {
+                    // Restore DOM
+                    wrapper.removeChild(originalTable);
+                    parent.replaceChild(originalTable, wrapper);
+                    
+                    const link = document.createElement('a');
+                    link.download = 'CNPI_Routine.png';
+                    link.href = canvas.toDataURL('image/png');
+                    link.click();
+                    showToast("Download Complete!", "check_circle");
+                }).catch(err => {
+                    if (wrapper.parentNode) {
+                        wrapper.removeChild(originalTable);
+                        parent.replaceChild(originalTable, wrapper);
+                    }
+                    showToast("Failed to download", "error");
+                    console.error(err);
+                });
+            }, 50);
+        }
+
+        applyTimeBasedTheme();
+        applyColor(currentColorIndex);
+        init();
+        initRipples();
+
+        // Register Service Worker for Offline Support
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./sw.js').then(reg => {
+                    console.log('SW registered', reg);
+                }).catch(err => console.error('SW error', err));
+            });
+        }
+    </script>
+</body>
+</html>
+
