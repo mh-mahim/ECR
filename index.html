@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>CNPI Routine Pro | ENT-3/2</title>
+    
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Material Icons -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
+    
+    <!-- External Libraries for PDF/Image Download -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    
+    <!-- Custom Styles -->
+    <link rel="stylesheet" href="style.css">
+    
+    <meta name="theme-color" content="#18181b">
+</head>
+<body data-theme="light">
+    <!-- Advanced Glass Bubble Animations -->
+    <div class="bg-shape shape-1"></div>
+    <div class="bg-shape shape-2"></div>
+    <div class="bg-shape shape-3"></div>
+    <div class="bg-shape shape-4"></div>
+    <div class="bg-shape shape-5"></div>
+    <div class="bg-shape shape-6"></div>
+    <div class="bg-shape shape-7"></div>
+    <div class="bg-shape shape-8"></div>
+
+    <div class="container">
+        <!-- Header Section -->
+        <header class="glass-panel main-header animate-fade-up">
+            <div class="header-content">
+                <div class="title-group">
+                    <h1 id="app-title-display">CNPI Routine Pro</h1>
+                    <div id="semester-subtitle-display" style="font-size: 0.9rem; font-weight: 800; color: var(--accent); letter-spacing: 0.5px; margin-top: 6px; text-transform: uppercase;">
+                        Electronics Department • Third Semester • Second Shift (ENT-3/2)
+                    </div>
+                    <div style="display: flex; gap: 8px; align-items: center; margin-top: 6px;">
+                        <span style="font-size: 0.85rem; font-weight: 700; color: var(--text-secondary);">By <a href="https://mhmahim.me" target="_blank" class="highlight-link" style="text-decoration: none;">M. H. Mahim</a></span>
+                    </div>
+                </div>
+                <div class="controls" style="display: flex; gap: 8px;">
+                    <button id="lang-toggle" class="icon-btn" aria-label="Toggle Language" style="font-weight: 800; font-size: 0.9rem;">
+                        EN
+                    </button>
+                    <button id="theme-toggle" class="icon-btn" aria-label="Toggle Theme">
+                        <span class="material-icons-round">dark_mode</span>
+                    </button>
+                </div>
+            </div>
+            
+            <div class="live-status-bar">
+                <div class="clock-display">
+                    <div class="clock-time-wrapper">
+                        <span class="material-icons-round">watch_later</span>
+                        <span id="current-time">--:--:--</span>
+                    </div>
+                    <span id="current-date">-- ---, ----</span>
+                </div>
+                <div id="live-class-indicator" class="live-indicator hidden">
+                    <div class="pulse-dot"></div>
+                    <span id="live-class-text" data-i18n="ongoing">Class Ongoing</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Day Selector Navigation -->
+        <nav class="day-selector animate-fade-up delay-1" id="day-selector">
+            <button class="day-tab active" data-day="Sunday">Sun</button>
+            <button class="day-tab" data-day="Monday">Mon</button>
+            <button class="day-tab" data-day="Tuesday">Tue</button>
+            <button class="day-tab" data-day="Wednesday">Wed</button>
+            <button class="day-tab" data-day="Thursday">Thu</button>
+        </nav>
+
+        <!-- Main Content Area -->
+        <main class="animate-fade-up delay-2">
+            <div class="view-toggle">
+                <h2><span data-i18n="scheduleFor">Schedule for</span> <span id="selected-day-title">Sunday</span></h2>
+                <div style="display: flex; gap: 16px; align-items: center;">
+                    <div class="dropdown" style="position: relative;">
+                        <button id="download-btn" class="text-btn">
+                            <span class="material-icons-round" style="font-size: 18px;">download</span> <span data-i18n="download">Download</span>
+                        </button>
+                        <div id="download-menu" class="glass-panel hidden" style="position: absolute; top: 100%; right: 0; margin-top: 8px; z-index: 100; display: flex; flex-direction: column; gap: 4px; padding: 8px; min-width: 120px;">
+                            <button id="dl-img" class="text-btn" style="padding: 8px; width: 100%;"><span class="material-icons-round" style="font-size: 18px;">image</span> Image</button>
+                            <button id="dl-pdf" class="text-btn" style="padding: 8px; width: 100%;"><span class="material-icons-round" style="font-size: 18px;">picture_as_pdf</span> PDF</button>
+                        </div>
+                    </div>
+                    <button id="view-all-btn" class="action-btn mobile-hidden" style="display: flex; align-items: center; gap: 6px;">
+                        <span class="material-icons-round" style="font-size: 18px;">table_chart</span> <span id="view-all-text" data-i18n="viewAll">View All</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Mobile-Friendly Cards View (Default for smaller screens) -->
+            <div id="routine-cards-container" class="routine-cards">
+                <!-- Cards injected via JS -->
+            </div>
+
+            <!-- Full Table View (Hidden by default, shown on desktop or when 'View All' is clicked) -->
+            <div id="routine-table-container" class="routine-table-container hidden">
+                <div class="glass-panel with-glow">
+                    <table id="main-routine-table">
+                        <thead>
+                            <tr id="table-head">
+                                <th class="time-col-header" data-i18n="timeCol">Time</th>
+                                <!-- Days injected via JS -->
+                            </tr>
+                        </thead>
+                        <tbody id="table-body">
+                            <!-- Rows injected via JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Faculty Section -->
+            <section class="faculty-section">
+                <h2 class="section-title"><span class="material-icons-round">school</span> <span data-i18n="facultyTitle">Faculty Directory</span></h2>
+                <div id="faculty-grid" class="faculty-grid">
+                    <!-- Faculty cards injected via JS -->
+                </div>
+            </section>
+        </main>
+        
+        <footer class="glass-panel text-center animate-fade-up with-glow delay-3">
+            <p>Developed with ❤️ by <a href="https://mhmahim.me" target="_blank" class="highlight-link">M. H. Mahim</a></p>
+            <div class="social-links">
+                <a href="https://facebook.com/m.h.mahim.facebook" target="_blank" class="icon-link"><span class="material-icons-round">facebook</span></a>
+                <a href="https://mhmahim.me" target="_blank" class="icon-link"><span class="material-icons-round">language</span></a>
+                <a href="https://github.com/mh-mahim" target="_blank" class="icon-link">
+                    <svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>
+                </a>
+            </div>
+            <p class="copyright">© 2026 CNPI Electronics Department. Redesigned.</p>
+        </footer>
+    </div>
+
+    <!-- Modals -->
+    <div id="teacher-modal" class="modal-overlay hidden">
+        <div class="modal-content glass-panel">
+            <button class="modal-close icon-btn" id="close-modal-btn"><span class="material-icons-round">close</span></button>
+            <div id="modal-body">
+                <!-- Teacher Details injected here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Mouse Interaction Glow -->
+    <div id="cursor-glow" class="cursor-glow"></div>
+    <script src="data.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
