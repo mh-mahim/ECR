@@ -1,5 +1,5 @@
 /* ==========================================================================
-   Material Design 3 (M3) Search, Filter Chips & Faculty Directory
+   Material Design 3 (M3) Search Bar & Faculty Directory
    ECR Routine Web • Electronics Technology
    ========================================================================== */
 
@@ -10,8 +10,9 @@
 .search-row {
   position: relative;
   width: 100%;
-  margin-top: var(--space-3, 12px);
-  padding: 0 var(--space-4, 16px);
+  margin-top: var(--space-2, 8px);
+  margin-bottom: var(--space-3, 12px);
+  padding: 0;
 }
 
 .search-bar {
@@ -21,6 +22,7 @@
   width: 100%;
   min-height: 48px;
   height: 48px;
+  margin-bottom: var(--space-3, 12px);
   padding: 0 12px 0 16px;
   background-color: var(--md-surface-container-high, rgba(25, 49, 43, 0.72));
   border: 1.5px solid var(--md-outline-variant, rgba(138, 247, 216, 0.2));
@@ -151,112 +153,7 @@
 }
 
 /* --------------------------------------------------------------------------
-   2. Filter Chips Row (All, Labs Only, Theory Only)
-   -------------------------------------------------------------------------- */
-.filter-chips-row {
-  display: flex;
-  align-items: center;
-  gap: var(--space-2, 8px);
-  width: 100%;
-  padding: 10px 0 2px;
-  overflow-x: auto;
-  overscroll-behavior-x: contain;
-  scroll-behavior: smooth;
-  scrollbar-width: none; /* Firefox */
-  -ms-overflow-style: none; /* IE/Edge */
-  -webkit-overflow-scrolling: touch;
-}
-
-.filter-chips-row::-webkit-scrollbar {
-  display: none; /* WebKit */
-}
-
-/* Individual Filter Chip */
-.filter-chip {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
-  flex: none;
-  min-height: 36px;
-  padding: 6px 14px;
-  background-color: var(--md-surface-container-low, rgba(15, 30, 27, 0.65));
-  color: var(--md-on-surface-variant, #9ab4aa);
-  border: 1.5px solid var(--md-outline-variant, rgba(138, 247, 216, 0.18));
-  border-radius: var(--shape-full, 9999px);
-  font-family: inherit;
-  font-size: 0.78rem;
-  font-weight: 600;
-  letter-spacing: 0.02em;
-  line-height: 1;
-  white-space: nowrap;
-  user-select: none;
-  cursor: pointer;
-  transition: background-color var(--motion-duration-short, 150ms) ease,
-              color var(--motion-duration-short, 150ms) ease,
-              border-color var(--motion-duration-short, 150ms) ease,
-              transform var(--motion-duration-short, 150ms) ease,
-              box-shadow var(--motion-duration-short, 150ms) ease;
-}
-
-.filter-chip:hover {
-  background-color: var(--md-surface-container, rgba(19, 39, 34, 0.85));
-  color: var(--md-on-surface, #e0f2eb);
-  border-color: var(--md-outline, rgba(154, 180, 170, 0.35));
-  transform: translateY(-1px);
-}
-
-.filter-chip:active {
-  transform: translateY(0) scale(0.97);
-}
-
-.filter-chip:focus-visible {
-  outline: 2px solid var(--md-outline-focus, #38e1ad);
-  outline-offset: 2px;
-}
-
-/* Active Pill Style (M3 Elevated Pill) */
-.filter-chip.active,
-.filter-chip[aria-pressed="true"],
-.filter-chip[data-active="true"] {
-  background: linear-gradient(145deg, var(--md-primary, #38e1ad), var(--md-secondary, #7fe0c3));
-  color: var(--md-on-primary, #003829);
-  border-color: transparent;
-  font-weight: 700;
-  box-shadow: 0 4px 14px rgba(56, 225, 173, 0.28),
-              inset 0 1px 0 rgba(255, 255, 255, 0.45);
-}
-
-.filter-chip.active:hover {
-  background: linear-gradient(145deg, #4ce4b7, #98ffe0);
-  color: var(--md-on-primary, #003829);
-  box-shadow: 0 6px 18px rgba(56, 225, 173, 0.35),
-              inset 0 1px 0 rgba(255, 255, 255, 0.5);
-}
-
-/* Chip Counter Badge */
-.filter-chip .chip-count {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-width: 18px;
-  height: 18px;
-  padding: 0 5px;
-  border-radius: var(--shape-full, 9999px);
-  background: rgba(0, 0, 0, 0.2);
-  color: inherit;
-  font-family: var(--font-mono, monospace);
-  font-size: 0.65rem;
-  font-weight: 700;
-}
-
-.filter-chip.active .chip-count {
-  background: rgba(0, 56, 41, 0.25);
-  color: var(--md-on-primary, #003829);
-}
-
-/* --------------------------------------------------------------------------
-   3. Faculty Directory Grid & Cards
+   2. Faculty Directory Grid & Cards
    -------------------------------------------------------------------------- */
 .faculty-section {
   width: 100%;
@@ -266,7 +163,7 @@
   display: grid;
   grid-template-columns: 1fr;
   gap: var(--space-3, 10px);
-  padding: var(--space-3, 12px);
+  padding: 0;
 }
 
 /* Faculty Card */
@@ -446,13 +343,12 @@
 }
 
 /* --------------------------------------------------------------------------
-   4. Responsive Breakpoints: Tablet & Desktop
+   3. Responsive Breakpoints: Tablet & Desktop
    -------------------------------------------------------------------------- */
 @media (min-width: 640px) {
   .faculty-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: var(--space-3, 12px);
-    padding: var(--space-4, 16px);
   }
 
   .faculty-card {
@@ -468,16 +364,6 @@
   .faculty-designation {
     font-size: 0.74rem;
   }
-
-  .filter-chips-row {
-    padding: 12px 0 4px;
-    gap: var(--space-2, 10px);
-  }
-
-  .filter-chip {
-    font-size: 0.82rem;
-    padding: 7px 16px;
-  }
 }
 
 @media (min-width: 1024px) {
@@ -487,7 +373,7 @@
 }
 
 /* --------------------------------------------------------------------------
-   5. Light Theme Overrides
+   4. Light Theme Overrides
    -------------------------------------------------------------------------- */
 [data-theme="light"] .search-bar {
   background-color: var(--md-surface, #ffffff);
@@ -500,18 +386,6 @@
   border-color: var(--md-primary, #006c52);
   box-shadow: 0 0 0 3.5px var(--md-primary-soft, rgba(0, 108, 82, 0.12)),
               var(--shadow-2, 0 4px 14px rgba(10, 80, 60, 0.14));
-}
-
-[data-theme="light"] .filter-chip {
-  background-color: var(--md-surface-container, rgba(230, 244, 239, 0.85));
-  border-color: var(--md-outline-variant, rgba(5, 50, 39, 0.14));
-  color: var(--md-on-surface-variant, #49635a);
-}
-
-[data-theme="light"] .filter-chip.active {
-  background: linear-gradient(145deg, #006c52, #1bc99a);
-  color: #ffffff;
-  box-shadow: 0 4px 14px rgba(0, 108, 82, 0.22);
 }
 
 [data-theme="light"] .faculty-card {

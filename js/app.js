@@ -6,7 +6,7 @@
 
 import { store } from './modules/state.js';
 import { t } from './modules/i18n.js';
-import { renderHeader, renderBottomNav } from './modules/nav.js';
+import { renderHeader, renderBottomNav, initScrollSpy } from './modules/nav.js';
 import { renderHero, startHeroTimer } from './modules/hero.js';
 import { renderRoutineViews } from './modules/routine-views.js';
 import { renderSearchBar, renderFacultySection, setupModalManager, showToast } from './modules/search-modals.js';
@@ -58,7 +58,7 @@ document.addEventListener('DOMContentLoaded', () => {
     startHeroTimer(heroContainer);
   }
 
-  // 6. Mount Search Bar & Filter Chips
+  // 6. Mount Search Bar
   const searchContainer = document.getElementById('searchMount');
   if (searchContainer) {
     renderSearchBar(searchContainer);
@@ -76,10 +76,11 @@ document.addEventListener('DOMContentLoaded', () => {
     renderFacultySection(facultyContainer);
   }
 
-  // 9. Mount Bottom Navigation Bar
+  // 9. Mount Bottom Navigation Bar & initialize ScrollSpy
   const bottomNavContainer = document.getElementById('bottomNavMount');
   if (bottomNavContainer) {
     renderBottomNav(bottomNavContainer);
+    initScrollSpy();
   }
 
   // 10. Mount Modal System & Toast Manager
@@ -91,12 +92,17 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // 12. Initialize PWA Service Worker & Install Handler
-  const installBtn = document.getElementById('installAppBtn');
+  const installBtn = document.getElementById('topbarInstallBtn');
   initPwa(installBtn);
 
-  // 13. Dynamic footer localization
-  const updateFooter = () => {
+  // 13. Dynamic localization for static headings & footer
+  const updateStaticHeadings = () => {
     const lang = store.getState().lang;
+    const routineKicker = document.getElementById('routineSectionKicker');
+    const routineTitle = document.getElementById('routineSectionTitle');
+    if (routineKicker) routineKicker.textContent = t('routineSectionKicker', lang);
+    if (routineTitle) routineTitle.textContent = t('routineSectionTitle', lang);
+
     const footerCredit = document.getElementById('footerCredit');
     if (footerCredit) {
       footerCredit.innerHTML = lang === 'bn'
@@ -104,9 +110,10 @@ document.addEventListener('DOMContentLoaded', () => {
         : `Developed & maintained by <a href="https://mhmahim.me" target="_blank" rel="noopener noreferrer">M. H. Mahim</a> • Class Representative`;
     }
   };
-  updateFooter();
+
+  updateStaticHeadings();
   store.subscribe((_, changed) => {
-    if (changed.includes('lang')) updateFooter();
+    if (changed.includes('lang')) updateStaticHeadings();
   });
 
   // Remove preloader if present

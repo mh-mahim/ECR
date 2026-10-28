@@ -4,7 +4,7 @@
  */
 
 import { TEACHERS, getTeacherByCode } from '../data/faculty-data.js';
-import { SUBJECTS } from '../data/routine-data.js';
+import { SUBJECTS, WORKING_DAYS } from '../data/routine-data.js';
 import { store } from './state.js';
 import { t, toBanglaDigits } from './i18n.js';
 
@@ -30,6 +30,15 @@ function escapeHtml(str) {
       default: return match;
     }
   });
+}
+
+/**
+ * Formats time string (e.g. "01:30 PM") with optional Bangla digit conversion
+ */
+function formatTime(timeStr, lang = 'en') {
+  if (!timeStr) return '';
+  const cleanTime = String(timeStr).replace(/^0(?=\d)/, '');
+  return lang === 'bn' ? toBanglaDigits(cleanTime) : cleanTime;
 }
 
 /**
@@ -106,7 +115,7 @@ export function showToast(message, duration = 2200) {
     document.body.appendChild(toastEl);
   }
 
-  // Render toast message with optional check icon
+  // Render toast message with check icon
   toastEl.innerHTML = `
     <svg viewBox="0 0 24 24" aria-hidden="true">
       <path d="M20 6 9 17l-5-5"/>
@@ -130,12 +139,12 @@ export function showToast(message, duration = 2200) {
 }
 
 /* ==========================================================================
-   Search Bar & Filter Chips Row
+   Search Bar (M3 Pill Design)
    ========================================================================== */
 
 /**
- * Renders the M3 Search Bar and Filter Chips row into containerEl
- * Wires search input to store.setSearchQuery and filter chips to store.setFilterType
+ * Renders the clean M3 Search Bar into containerEl
+ * Wires search input to store.setSearchQuery
  * @param {string|Element} containerEl - Container element or CSS selector
  */
 export function renderSearchBar(containerEl) {
@@ -145,9 +154,9 @@ export function renderSearchBar(containerEl) {
     return;
   }
 
-  const { lang, searchQuery, filterType } = store.getState();
+  const { lang, searchQuery } = store.getState();
 
-  // Search markup with M3 container, search icon, clear button, and filter chips row
+  // Clean Search markup with M3 container, search icon, and clear button
   container.innerHTML = `
     <div class="search-bar">
       <svg class="search-icon search-ico" viewBox="0 0 24 24" aria-hidden="true">
@@ -177,43 +186,10 @@ export function renderSearchBar(containerEl) {
         </svg>
       </button>
     </div>
-
-    <div class="filter-chips-row" role="radiogroup" aria-label="Class type filter">
-      <button 
-        type="button" 
-        class="filter-chip ${filterType === 'all' ? 'active' : ''}" 
-        data-filter="all"
-        role="radio"
-        aria-checked="${filterType === 'all'}"
-      >
-        <span>${escapeHtml(t('filterAll', lang))}</span>
-      </button>
-
-      <button 
-        type="button" 
-        class="filter-chip ${filterType === 'lab' ? 'active' : ''}" 
-        data-filter="lab"
-        role="radio"
-        aria-checked="${filterType === 'lab'}"
-      >
-        <span>${escapeHtml(t('filterLab', lang))}</span>
-      </button>
-
-      <button 
-        type="button" 
-        class="filter-chip ${filterType === 'theory' ? 'active' : ''}" 
-        data-filter="theory"
-        role="radio"
-        aria-checked="${filterType === 'theory'}"
-      >
-        <span>${escapeHtml(t('filterTheory', lang))}</span>
-      </button>
-    </div>
   `;
 
   const inputEl = container.querySelector('#routineSearchInput');
   const clearBtn = container.querySelector('#routineSearchClearBtn');
-  const chipBtns = container.querySelectorAll('.filter-chip');
 
   // Input event: wire to store
   if (inputEl) {
@@ -258,15 +234,7 @@ export function renderSearchBar(containerEl) {
     });
   }
 
-  // Filter chips click: wire to store.setFilterType
-  chipBtns.forEach((chip) => {
-    chip.addEventListener('click', () => {
-      const type = chip.getAttribute('data-filter');
-      store.setFilterType(type);
-    });
-  });
-
-  // Store subscription to update search & filter UI when state changes externally
+  // Store subscription to update search placeholder & input value on state changes
   store.subscribe((state, changedKeys) => {
     if (changedKeys.includes('lang')) {
       const currentLang = state.lang;
@@ -278,12 +246,6 @@ export function renderSearchBar(containerEl) {
         clearBtn.setAttribute('aria-label', t('clearSearch', currentLang));
         clearBtn.setAttribute('title', t('clearSearch', currentLang));
       }
-      const allChip = container.querySelector('[data-filter="all"] span');
-      const labChip = container.querySelector('[data-filter="lab"] span');
-      const theoryChip = container.querySelector('[data-filter="theory"] span');
-      if (allChip) allChip.textContent = t('filterAll', currentLang);
-      if (labChip) labChip.textContent = t('filterLab', currentLang);
-      if (theoryChip) theoryChip.textContent = t('filterTheory', currentLang);
     }
 
     if (changedKeys.includes('searchQuery')) {
@@ -299,15 +261,6 @@ export function renderSearchBar(containerEl) {
           clearBtn.setAttribute('tabindex', '-1');
         }
       }
-    }
-
-    if (changedKeys.includes('filterType')) {
-      chipBtns.forEach((chip) => {
-        const type = chip.getAttribute('data-filter');
-        const isActive = type === state.filterType;
-        chip.classList.toggle('active', isActive);
-        chip.setAttribute('aria-checked', String(isActive));
-      });
     }
   });
 }
@@ -328,7 +281,7 @@ function getTeacherInitials(name, code) {
 }
 
 /**
- * Renders the responsive Faculty Directory Grid into containerEl
+ * Renders the responsive Faculty Directory Grid into containerEl with Section Header
  * 1 column on mobile, 2 columns on tablet/desktop.
  * Clicking a teacher card opens their profile in the modal.
  * Clicking the phone call button triggers direct tel: call.
@@ -341,8 +294,13 @@ export function renderFacultySection(containerEl) {
     return;
   }
 
-  function renderCards() {
+  function renderContent() {
     const { lang } = store.getState();
+    const sectionTitle = t('facultySectionKicker', lang);
+    const sectionSubtitle = t('facultySectionTitle', lang);
+    const totalTeachers = lang === 'bn' 
+      ? `${toBanglaDigits(TEACHERS.length)} জন শিক্ষক` 
+      : `${TEACHERS.length} Faculty Members`;
 
     const cardsHtml = TEACHERS.map((teacher) => {
       const name = teacher.name?.[lang] || teacher.name?.en || '';
@@ -389,7 +347,26 @@ export function renderFacultySection(containerEl) {
       `;
     }).join('');
 
-    container.innerHTML = cardsHtml;
+    container.innerHTML = `
+      <div class="section-header faculty-header">
+        <div class="section-header-text">
+          <div class="section-kicker">
+            <svg class="section-kicker-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+              <circle cx="9" cy="7" r="4"/>
+              <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+              <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+            </svg>
+            <span>${escapeHtml(sectionTitle)}</span>
+          </div>
+          <h2 class="section-title">${escapeHtml(sectionSubtitle)}</h2>
+        </div>
+        <span class="section-badge">${escapeHtml(totalTeachers)}</span>
+      </div>
+      <div class="faculty-grid">
+        ${cardsHtml}
+      </div>
+    `;
 
     // Attach card click handlers (opens faculty modal)
     container.querySelectorAll('.faculty-card').forEach((card) => {
@@ -397,7 +374,6 @@ export function renderFacultySection(containerEl) {
       const teacher = getTeacherByCode(teacherCode);
 
       card.addEventListener('click', (e) => {
-        // Do not trigger modal if user clicked directly on the phone call button
         if (e.target.closest('.call-btn, .faculty-call-btn')) return;
         if (teacher) {
           store.openModal('faculty', teacher);
@@ -424,12 +400,12 @@ export function renderFacultySection(containerEl) {
   }
 
   // Initial render
-  renderCards();
+  renderContent();
 
   // Re-render when language changes
   store.subscribe((state, changedKeys) => {
     if (changedKeys.includes('lang')) {
-      renderCards();
+      renderContent();
     }
   });
 }
@@ -474,7 +450,6 @@ export function setupModalManager() {
     `;
     document.body.appendChild(overlayEl);
   } else {
-    // Ensure classes exist for styling
     overlayEl.classList.add('modal-overlay');
     const sheetEl = overlayEl.querySelector('.modal, .modal-sheet');
     if (sheetEl) sheetEl.classList.add('modal-sheet');
@@ -484,18 +459,12 @@ export function setupModalManager() {
   const modalTag = overlayEl.querySelector('#modalTag') || overlayEl.querySelector('.modal-badge');
   const closeBtn = overlayEl.querySelector('.modal-close-btn, .close');
 
-  /**
-   * Close modal helper
-   */
   function closeModal() {
     overlayEl.classList.remove('show', 'active');
     overlayEl.setAttribute('aria-hidden', 'true');
     document.body.style.overflow = '';
   }
 
-  /**
-   * Open modal helper
-   */
   function openModal() {
     overlayEl.classList.add('show', 'active');
     overlayEl.setAttribute('aria-hidden', 'false');
@@ -540,9 +509,28 @@ export function setupModalManager() {
     const courseCode = lang === 'bn' ? toBanglaDigits(classData.course) : classData.course;
 
     // Time & period calculation
-    const periodLabel = classData.periodText || (classData.p ? `${classData.p}${classData.span > 1 ? `–${classData.p + classData.span - 1}` : ''} ${t('period', lang)}` : '');
-    const timeRange = classData.time || `${classData.start || ''} ${t('to', lang)} ${classData.end || ''}`.trim();
-    const subheader = [classData.day, timeRange, periodLabel].filter(Boolean).join(' • ');
+    const startPeriodNum = classData.periodStart || classData.p || 1;
+    const endPeriodNum = classData.periodEnd || (startPeriodNum + (classData.span || 1) - 1);
+    const periodRange = startPeriodNum === endPeriodNum 
+      ? `${startPeriodNum}` 
+      : `${startPeriodNum}–${endPeriodNum}`;
+    const periodLabel = lang === 'bn'
+      ? `${toBanglaDigits(periodRange)} ${t('period', lang)}`
+      : `${classData.span > 1 ? 'Periods' : 'Period'} ${periodRange}`;
+
+    // Precise start & end time
+    const startTime = classData.startTime || classData.start || '';
+    const endTime = classData.endTime || classData.end || '';
+    const timeRange = (startTime && endTime)
+      ? `${formatTime(startTime, lang)} ${t('to', lang)} ${formatTime(endTime, lang)}`
+      : (classData.time ? formatTime(classData.time, lang) : '');
+
+    // Localized Day Name
+    const dayObj = WORKING_DAYS.find(d => d.id === classData.day);
+    const dayLabel = dayObj ? (lang === 'bn' ? dayObj.bn : dayObj.en) : (classData.day || '');
+
+    const subheaderParts = [dayLabel, timeRange, periodLabel].filter(Boolean);
+    const subheader = subheaderParts.join(' • ');
 
     // Type: Theory vs Practical Lab
     const isLab = (classData.type && classData.type.toLowerCase().includes('lab')) ||
@@ -630,7 +618,7 @@ export function setupModalManager() {
       btnShare.addEventListener('click', () => {
         shareContent({
           title: `ENT Pulse: ${subjectName}`,
-          text: `${subjectName} (${classData.course}) • ${classData.day || ''} • Room: ${classData.room} • Faculty: ${teacherName} (${classData.teacher})`,
+          text: `${subjectName} (${classData.course}) • ${dayLabel} • Room: ${classData.room} • Faculty: ${teacherName} (${classData.teacher})`,
           url: window.location.href
         }, t('copiedToClipboard', lang));
       });
@@ -756,7 +744,6 @@ export function setupModalManager() {
         renderFacultyModal(activeModal.data, lang);
         openModal();
       } else if (activeModal.type === 'notice') {
-        // Optional notice dialog
         if (modalTag) modalTag.textContent = 'Notice';
         modalBody.innerHTML = `
           <h2 class="modal-title">${escapeHtml(activeModal.data?.title || 'Announcement')}</h2>

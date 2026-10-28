@@ -43,7 +43,6 @@ export const resolveScheduleState = (status) => {
     return 'LIVE NOW';
   }
   if (status.state === 'UP_NEXT') {
-    // If upcoming class is beyond period 1, we are in a break between classes
     const next = status.nextClass;
     const isBreak = next && (
       (next.p && next.p > 1) ||
@@ -65,16 +64,23 @@ export const getStatusPillText = (statusKey, lang = 'en') => {
       case 'UP NEXT':
         return t('upNext', 'bn'); // 'পরবর্তী ক্লাস'
       case 'BREAK':
-        return 'বিরতি';
+        return 'বিরতি চলছে';
       case 'DAY FINISHED':
-        return t('dayCompleted', 'bn'); // 'আজকের সব ক্লাস সম্পন্ন'
+        return t('dayCompletedPill', 'bn'); // 'আজকের ক্লাস সমাপ্ত'
       case 'WEEKEND':
-        return t('weekend', 'bn'); // 'সাপ্তাহিক ছুটি'
+        return t('weekendPill', 'bn'); // 'সাপ্তাহিক ছুটি'
       default:
         return statusKey;
     }
   }
-  return statusKey; // 'LIVE NOW' | 'UP NEXT' | 'BREAK' | 'DAY FINISHED' | 'WEEKEND'
+  switch (statusKey) {
+    case 'DAY FINISHED':
+      return t('dayCompletedPill', 'en'); // 'DAY FINISHED'
+    case 'WEEKEND':
+      return t('weekendPill', 'en'); // 'WEEKEND'
+    default:
+      return statusKey;
+  }
 };
 
 /**
@@ -98,7 +104,7 @@ export const getStatusPillClass = (statusKey) => {
 };
 
 /**
- * Formats seconds remaining into large digital countdown digits
+ * Formats seconds remaining into digital countdown digits
  * Displays mm:ss or hh:mm:ss, localized to Bengali digits when required
  */
 export const formatTimerDigits = (totalSeconds, lang = 'en') => {
@@ -163,7 +169,7 @@ const generateHeroHTML = (lang = 'en') => {
       </div>
 
       <div class="hero-clock-chip" title="Dhaka Time (BST, UTC+6)">
-        <svg class="hero-clock-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <svg class="hero-clock-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
           <circle cx="12" cy="12" r="9"/>
           <polyline points="12 7 12 12 15 15"/>
         </svg>
@@ -174,12 +180,12 @@ const generateHeroHTML = (lang = 'en') => {
     <!-- Active Class & Countdown Area -->
     <div class="hero-body">
       <div class="hero-subject-area">
-        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+        <div class="hero-status-kicker-row">
           <div class="hero-status-pill status-live" id="heroStatusPill">
             <span class="hero-status-dot" aria-hidden="true"></span>
             <span id="heroStatusText">LIVE NOW</span>
           </div>
-          <span class="hero-kicker" id="heroKicker" style="margin-bottom: 0;">Schedule Console</span>
+          <span class="hero-kicker" id="heroKicker">Schedule Console</span>
         </div>
 
         <h1 class="hero-headline" id="heroSubjectHeadline">Checking Schedule…</h1>
@@ -287,7 +293,7 @@ const updateHeroLiveState = (container) => {
   const pillClass = getStatusPillClass(statusKey);
   const pillText = getStatusPillText(statusKey, lang);
 
-  // Update Clock
+  // Update Clock with Dhaka time
   const clockEl = container.querySelector('#heroClockTime');
   if (clockEl) {
     clockEl.textContent = lang === 'bn' ? toBanglaDigits(status.timeString) : status.timeString;
@@ -331,6 +337,9 @@ const updateHeroLiveState = (container) => {
 
       kickerText = `${typeLabel} • ${periodLabel}`;
 
+      const curStartFormatted = lang === 'bn' ? toBanglaDigits(cur.startTime) : cur.startTime;
+      const curEndFormatted = lang === 'bn' ? toBanglaDigits(cur.endTime) : cur.endTime;
+
       subtitleHTML = `
         <span class="hero-sub-item">
           <svg class="hero-icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -350,7 +359,7 @@ const updateHeroLiveState = (container) => {
           ${cur.type === 'Lab' ? (lang === 'bn' ? 'ল্যাব' : 'Lab') : (lang === 'bn' ? 'থিওরি' : 'Theory')}
         </span>
         <span class="hero-sub-item" style="font-family: var(--font-mono); font-size: 0.8em; opacity: 0.85;">
-          ${cur.startTime} – ${cur.endTime}
+          ${curStartFormatted} – ${curEndFormatted}
         </span>
       `;
 
@@ -363,9 +372,10 @@ const updateHeroLiveState = (container) => {
         const next = status.nextClass;
         const nextSubj = SUBJECTS[next.course]?.name?.[lang] || next.subject;
         const nextTeacher = getTeacherByCode(next.teacher)?.name?.[lang] || next.teacher;
+        const nextTimeFormatted = lang === 'bn' ? toBanglaDigits(next.startTime) : next.startTime;
         nextTickerHTML = `
           <span class="hero-next-ticker-label">${lang === 'bn' ? 'পরবর্তী' : 'Up Next'}:</span>
-          <span><strong>${escapeHtml(nextSubj)}</strong> (${escapeHtml(next.course)}) • ${escapeHtml(next.room)} • ${escapeHtml(nextTeacher)} • ${escapeHtml(next.startTime)}</span>
+          <span><strong>${escapeHtml(nextSubj)}</strong> (${escapeHtml(next.course)}) • ${escapeHtml(next.room)} • ${escapeHtml(nextTeacher)} • ${nextTimeFormatted}</span>
         `;
       }
       break;
@@ -381,6 +391,8 @@ const updateHeroLiveState = (container) => {
 
       kickerText = lang === 'bn' ? `বিরতি চলছে • পরবর্তী: ${nextTypeLabel}` : `Break Time • Up Next: ${nextTypeLabel}`;
       headlineText = nextSubj || (lang === 'bn' ? 'বিরতি সময়' : 'Break Time');
+
+      const nextTimeFormatted = next ? (lang === 'bn' ? toBanglaDigits(next.startTime) : next.startTime) : '';
 
       subtitleHTML = next ? `
         <span class="hero-sub-item">
@@ -401,7 +413,7 @@ const updateHeroLiveState = (container) => {
           ${next.type === 'Lab' ? (lang === 'bn' ? 'ল্যাব' : 'Lab') : (lang === 'bn' ? 'থিওরি' : 'Theory')}
         </span>
         <span class="hero-sub-item" style="font-family: var(--font-mono); font-size: 0.8em; opacity: 0.85;">
-          ${t('nextClassStartsAt', lang)} ${next.startTime}
+          ${t('nextClassStartsAt', lang)} ${nextTimeFormatted}
         </span>
       ` : `<span class="hero-sub-item">${t('freePeriod', lang)}</span>`;
 
@@ -423,6 +435,8 @@ const updateHeroLiveState = (container) => {
       kickerText = lang === 'bn' ? `ক্লাস শুরু হতে বাকি • ${nextTypeLabel}` : `Upcoming First Class • ${nextTypeLabel}`;
       headlineText = nextSubj || (lang === 'bn' ? 'পরবর্তী ক্লাস' : 'Upcoming Class');
 
+      const nextTimeFormatted = next ? (lang === 'bn' ? toBanglaDigits(next.startTime) : next.startTime) : '';
+
       subtitleHTML = next ? `
         <span class="hero-sub-item">
           <svg class="hero-icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -442,7 +456,7 @@ const updateHeroLiveState = (container) => {
           ${next.type === 'Lab' ? (lang === 'bn' ? 'ল্যাব' : 'Lab') : (lang === 'bn' ? 'থিওরি' : 'Theory')}
         </span>
         <span class="hero-sub-item" style="font-family: var(--font-mono); font-size: 0.8em; opacity: 0.85;">
-          ${t('nextClassStartsAt', lang)} ${next.startTime}
+          ${t('nextClassStartsAt', lang)} ${nextTimeFormatted}
         </span>
       ` : `<span class="hero-sub-item">${t('routineRuns', lang)}</span>`;
 
@@ -454,8 +468,8 @@ const updateHeroLiveState = (container) => {
     }
 
     case 'DAY FINISHED': {
-      kickerText = lang === 'bn' ? 'আজকের পাঠদান সম্পন্ন' : 'Routine Completed';
-      headlineText = t('dayCompleted', lang);
+      kickerText = t('dayCompletedKicker', lang); // 'দৈনিক সূচি সম্পন্ন' / 'Routine Completed'
+      headlineText = t('dayCompleted', lang); // 'আজকের সব ক্লাস সম্পন্ন' / 'Classes Finished Today'
       subtitleHTML = `<span class="hero-sub-item">${t('noMoreToday', lang)}</span>`;
       timerLabel = lang === 'bn' ? 'আজকের পাঠদান' : 'Day Status';
       timerDigits = lang === 'bn' ? toBanglaDigits('00:00') : '00:00';
@@ -466,8 +480,8 @@ const updateHeroLiveState = (container) => {
 
     case 'WEEKEND':
     default: {
-      kickerText = lang === 'bn' ? 'সাপ্তাহিক ছুটি' : 'Weekly Holiday';
-      headlineText = lang === 'bn' ? 'আজ সাপ্তাহিক ছুটি — ক্লাস বন্ধ' : 'Weekend / Off-Day';
+      kickerText = t('weekendKicker', lang); // 'ছুটির দিন' / 'Weekly Holiday'
+      headlineText = t('weekend', lang); // 'আজ সাপ্তাহিক ছুটি — ক্লাস বন্ধ' / 'Weekend / Off-Day'
       subtitleHTML = `<span class="hero-sub-item">${t('enjoyWeekend', lang)}</span>`;
       timerLabel = lang === 'bn' ? 'সাপ্তাহিক ছুটি' : 'Off-Day';
       timerDigits = lang === 'bn' ? toBanglaDigits('00:00') : '00:00';
