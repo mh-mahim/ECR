@@ -1,0 +1,395 @@
+/* ==========================================================================
+   Header Topbar & Bottom Navigation - Material Design 3 (M3)
+   Component: nav.css
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   Top App Bar (Sticky)
+   -------------------------------------------------------------------------- */
+.app-topbar,
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  width: 100%;
+  padding-top: env(safe-area-inset-top, 0px);
+  background-color: var(--glass-bg, rgba(15, 30, 27, 0.86));
+  background-color: color-mix(in srgb, var(--md-surface-container-low, #0f1e1b) 86%, transparent);
+  -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--md-outline-variant, rgba(154, 180, 170, 0.14));
+  box-shadow: var(--shadow-1, 0 2px 6px rgba(0, 0, 0, 0.2));
+  transition: background-color var(--motion-duration-medium, 250ms) var(--motion-easing-standard, cubic-bezier(0.2, 0, 0, 1)),
+              border-color var(--motion-duration-medium, 250ms) var(--motion-easing-standard, cubic-bezier(0.2, 0, 0, 1));
+}
+
+.topbar-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3, 0.75rem);
+  max-width: var(--content-max-width, 1200px);
+  margin: 0 auto;
+  padding: var(--space-2, 0.5rem) var(--space-4, 1rem);
+  min-height: 64px;
+}
+
+/* Brand & Logo */
+.topbar-brand {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3, 0.75rem);
+  text-decoration: none;
+  color: var(--md-on-surface, #e0f2eb);
+  min-width: 0;
+  border-radius: var(--shape-md, 12px);
+  cursor: pointer;
+  user-select: none;
+  transition: opacity var(--motion-duration-short, 150ms) ease;
+}
+
+.topbar-brand:focus-visible {
+  outline: 2px solid var(--md-outline-focus, rgba(56, 225, 173, 0.65));
+  outline-offset: 4px;
+}
+
+.topbar-brand:hover {
+  opacity: 0.94;
+}
+
+/* 44x44 M3 Primary Container Pill */
+.nav-logo-pill {
+  width: 44px;
+  height: 44px;
+  min-width: 44px;
+  min-height: 44px;
+  border-radius: var(--shape-full, 9999px);
+  background-color: var(--md-primary-container, #00513d);
+  color: var(--md-on-primary-container, #7affd4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 14px var(--md-primary-soft, rgba(56, 225, 173, 0.12)),
+              inset 0 1px 0 rgba(255, 255, 255, 0.22);
+  position: relative;
+  overflow: hidden;
+  flex-shrink: 0;
+  transition: transform var(--motion-duration-short, 150ms) var(--motion-easing-standard, cubic-bezier(0.2, 0, 0, 1)),
+              box-shadow var(--motion-duration-short, 150ms) var(--motion-easing-standard, cubic-bezier(0.2, 0, 0, 1));
+}
+
+.topbar-brand:hover .nav-logo-pill {
+  transform: scale(1.05);
+}
+
+.nav-pulse-icon {
+  width: 26px;
+  height: 26px;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 2.2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.2));
+}
+
+.topbar-brand-text {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.topbar-title {
+  font-family: var(--font-sans);
+  font-size: 1.0625rem;
+  font-weight: 700;
+  letter-spacing: -0.015em;
+  line-height: 1.2;
+  color: var(--md-on-surface, #e0f2eb);
+  white-space: nowrap;
+}
+
+html[lang="bn"] .topbar-title,
+[lang="bn"] .topbar-title {
+  font-family: var(--font-bangla, 'Hind Siliguri', sans-serif);
+  font-size: 1.125rem;
+}
+
+.topbar-subtitle {
+  font-size: 0.75rem;
+  font-weight: 500;
+  line-height: 1.3;
+  color: var(--md-on-surface-variant, #9ab4aa);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 240px;
+}
+
+html[lang="bn"] .topbar-subtitle,
+[lang="bn"] .topbar-subtitle {
+  font-family: var(--font-bangla, 'Hind Siliguri', sans-serif);
+}
+
+/* Actions Group */
+.topbar-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2, 0.5rem);
+  flex-shrink: 0;
+}
+
+.nav-action-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 44px;
+  min-height: 44px;
+  padding: var(--space-2, 0.5rem);
+  border-radius: var(--shape-full, 9999px);
+  background-color: transparent;
+  color: var(--md-on-surface-variant, #9ab4aa);
+  border: 1px solid var(--md-outline-variant, rgba(154, 180, 170, 0.14));
+  position: relative;
+  cursor: pointer;
+  user-select: none;
+  touch-action: manipulation;
+  transition: background-color var(--motion-duration-short, 150ms) ease,
+              color var(--motion-duration-short, 150ms) ease,
+              border-color var(--motion-duration-short, 150ms) ease,
+              transform var(--motion-duration-short, 150ms) ease;
+}
+
+.nav-action-btn:hover {
+  background-color: var(--md-surface-container-high, #19312b);
+  color: var(--md-on-surface, #e0f2eb);
+  border-color: var(--md-outline, rgba(154, 180, 170, 0.28));
+  transform: translateY(-1px);
+}
+
+.nav-action-btn:active {
+  transform: scale(0.96);
+  background-color: var(--md-surface-container-highest, #203b34);
+}
+
+.nav-action-btn:focus-visible {
+  outline: 2px solid var(--md-outline-focus, rgba(56, 225, 173, 0.65));
+  outline-offset: 2px;
+}
+
+.nav-action-btn svg {
+  width: 20px;
+  height: 20px;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* Bangla / Language Toggle Pill */
+.nav-lang-btn {
+  font-family: var(--font-bangla, 'Hind Siliguri', sans-serif);
+  font-size: 0.875rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  min-width: 44px;
+  padding: 0 var(--space-2, 0.5rem);
+  color: var(--md-primary, #38e1ad);
+  border-color: var(--md-primary-soft, rgba(56, 225, 173, 0.12));
+  background-color: var(--md-primary-soft, rgba(56, 225, 173, 0.12));
+}
+
+.nav-lang-btn:hover {
+  background-color: var(--md-primary-container, #00513d);
+  color: var(--md-on-primary-container, #7affd4);
+  border-color: transparent;
+}
+
+/* Install Button - Hidden by default */
+.nav-action-btn.hidden,
+.nav-action-btn[hidden] {
+  display: none !important;
+}
+
+/* --------------------------------------------------------------------------
+   Bottom Navigation Bar (Fixed Bottom)
+   -------------------------------------------------------------------------- */
+.app-bottom-nav,
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  background-color: var(--glass-bg, rgba(15, 30, 27, 0.92));
+  background-color: color-mix(in srgb, var(--md-surface-container-low, #0f1e1b) 92%, transparent);
+  -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(16px);
+  border-top: 1px solid var(--md-outline-variant, rgba(154, 180, 170, 0.14));
+  box-shadow: var(--shadow-2, 0 4px 14px rgba(0, 0, 0, 0.3));
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+  transition: background-color var(--motion-duration-medium, 250ms) var(--motion-easing-standard, cubic-bezier(0.2, 0, 0, 1)),
+              border-color var(--motion-duration-medium, 250ms) var(--motion-easing-standard, cubic-bezier(0.2, 0, 0, 1));
+}
+
+.bottom-nav-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  max-width: 600px;
+  margin: 0 auto;
+  height: var(--bottom-nav-height, 64px);
+  padding: 0 var(--space-2, 0.5rem);
+}
+
+/* Bottom Nav Items */
+.bottom-nav-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  min-height: 48px;
+  min-width: 48px;
+  padding: var(--space-1, 0.25rem) 0;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  touch-action: manipulation;
+  color: var(--md-on-surface-variant, #9ab4aa);
+  border-radius: var(--shape-lg, 16px);
+  transition: color var(--motion-duration-short, 150ms) ease;
+  position: relative;
+  user-select: none;
+}
+
+.bottom-nav-item:focus-visible {
+  outline: 2px solid var(--md-outline-focus, rgba(56, 225, 173, 0.65));
+  outline-offset: -2px;
+}
+
+/* Active Pill Indicator (M3 Secondary-Container) */
+.bottom-nav-indicator {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 32px;
+  border-radius: var(--shape-full, 9999px);
+  background-color: transparent;
+  color: var(--md-on-surface-variant, #9ab4aa);
+  transition: background-color var(--motion-duration-short, 150ms) var(--motion-easing-standard, cubic-bezier(0.2, 0, 0, 1)),
+              color var(--motion-duration-short, 150ms) var(--motion-easing-standard, cubic-bezier(0.2, 0, 0, 1)),
+              width var(--motion-duration-short, 150ms) var(--motion-easing-standard, cubic-bezier(0.2, 0, 0, 1));
+}
+
+.bottom-nav-indicator svg {
+  width: 22px;
+  height: 22px;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  transition: stroke var(--motion-duration-short, 150ms) ease;
+}
+
+/* Active State */
+.bottom-nav-item.active {
+  color: var(--md-on-surface, #e0f2eb);
+}
+
+.bottom-nav-item.active .bottom-nav-indicator {
+  background-color: var(--md-secondary-container, #00513f);
+  color: var(--md-on-secondary-container, #9cf2d5);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.14);
+}
+
+.bottom-nav-item.active .bottom-nav-indicator svg {
+  stroke-width: 2.3;
+}
+
+/* Item Label */
+.bottom-nav-label {
+  margin-top: 3px;
+  font-family: var(--font-sans);
+  font-size: 0.7188rem;
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: 0.015em;
+  text-align: center;
+  color: inherit;
+  transition: color var(--motion-duration-short, 150ms) ease,
+              font-weight var(--motion-duration-short, 150ms) ease;
+  white-space: nowrap;
+}
+
+html[lang="bn"] .bottom-nav-label,
+[lang="bn"] .bottom-nav-label {
+  font-family: var(--font-bangla, 'Hind Siliguri', sans-serif);
+  font-size: 0.75rem;
+}
+
+.bottom-nav-item.active .bottom-nav-label {
+  color: var(--md-on-surface, #e0f2eb);
+  font-weight: 700;
+}
+
+/* --------------------------------------------------------------------------
+   Responsive Layout & Polish
+   -------------------------------------------------------------------------- */
+@media (max-width: 480px) {
+  .topbar-subtitle {
+    max-width: 150px;
+  }
+  .topbar-inner {
+    padding: var(--space-2, 0.5rem) var(--space-3, 0.75rem);
+  }
+  .topbar-actions {
+    gap: var(--space-1, 0.25rem);
+  }
+  .nav-action-btn {
+    min-width: 40px;
+    min-height: 40px;
+    padding: 6px;
+  }
+  .bottom-nav-indicator {
+    width: 48px;
+  }
+}
+
+@media (min-width: 900px) {
+  .app-bottom-nav,
+  .bottom-nav {
+    display: flex;
+    justify-content: center;
+    background: transparent;
+    border-top: none;
+    box-shadow: none;
+    pointer-events: none;
+    bottom: var(--space-2, 0.5rem);
+  }
+  .bottom-nav-inner {
+    pointer-events: auto;
+    width: 480px;
+    border-radius: var(--shape-full, 9999px);
+    border: 1px solid var(--md-outline-variant, rgba(154, 180, 170, 0.14));
+    background-color: var(--md-surface-container, #132722);
+    box-shadow: var(--shadow-2, 0 4px 14px rgba(0, 0, 0, 0.3));
+    -webkit-backdrop-filter: blur(16px);
+    backdrop-filter: blur(16px);
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Print Hidden Rule
+   -------------------------------------------------------------------------- */
+@media print {
+  .app-topbar,
+  .topbar,
+  .app-bottom-nav,
+  .bottom-nav {
+    display: none !important;
+  }
+}

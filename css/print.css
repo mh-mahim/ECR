@@ -1,0 +1,405 @@
+/* ==========================================================================
+   Monochrome A4 Print Stylesheet - ENT Pulse / ECR Routine Web
+   Optimized for A4 Landscape & Portrait Timetable Printing
+   ========================================================================== */
+
+@page {
+  size: A4 landscape;
+  margin: 10mm 12mm 12mm 12mm;
+}
+
+@media print {
+  /* Reset All Color & Effects for Crisp Monochrome Printing */
+  *,
+  *::before,
+  *::after {
+    background: transparent !important;
+    color: #000000 !important;
+    box-shadow: none !important;
+    text-shadow: none !important;
+    filter: none !important;
+    backdrop-filter: none !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  html, body {
+    margin: 0 !important;
+    padding: 0 !important;
+    background: #ffffff !important;
+    color: #000000 !important;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif !important;
+    font-size: 9pt !important;
+    line-height: 1.3 !important;
+  }
+
+  body::before,
+  body::after {
+    display: none !important;
+  }
+
+  .container,
+  .app-container {
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  /* ==========================================================================
+     Hide Interactive, Navigation, Search, and Mobile-Only UI
+     ========================================================================== */
+  .topbar,
+  .bottom-nav,
+  .day-bar,
+  .day-tabs,
+  .search-row,
+  .live,
+  .badges,
+  .icon-btn,
+  .call-btn,
+  .arrow,
+  .live-tag,
+  .badge,
+  .chips,
+  .toast,
+  .overlay,
+  .modal,
+  .skip-link,
+  #installBtn,
+  .notice-banner,
+  .notice-card,
+  .mobile-list,
+  button {
+    display: none !important;
+    visibility: hidden !important;
+  }
+
+  /* ==========================================================================
+     Institute Header & Official Branding
+     ========================================================================== */
+  .hero {
+    display: block !important;
+    margin: 0 0 10pt 0 !important;
+    padding: 0 0 8pt 0 !important;
+    border: none !important;
+    border-bottom: 2pt solid #000000 !important;
+    border-radius: 0 !important;
+    text-align: center !important;
+    page-break-after: avoid !important;
+    break-after: avoid !important;
+  }
+
+  .hero::before,
+  .hero::after {
+    display: none !important;
+  }
+
+  .hero h1 {
+    font-size: 16pt !important;
+    font-weight: 800 !important;
+    letter-spacing: -0.3px !important;
+    margin: 0 0 3pt 0 !important;
+    text-transform: uppercase !important;
+  }
+
+  .hero h1 em,
+  .hero h1 span {
+    color: #000000 !important;
+    font-style: normal !important;
+    font-weight: 800 !important;
+  }
+
+  .hero-desc {
+    font-size: 9pt !important;
+    color: #222222 !important;
+    margin: 2pt 0 6pt 0 !important;
+    line-height: 1.35 !important;
+  }
+
+  .meta-row {
+    display: flex !important;
+    justify-content: center !important;
+    gap: 16pt !important;
+    margin-top: 4pt !important;
+    border-top: 0.5pt solid #cccccc !important;
+    padding-top: 4pt !important;
+  }
+
+  .meta-box {
+    border: none !important;
+    padding: 0 !important;
+    background: none !important;
+    text-align: center !important;
+  }
+
+  .meta-label {
+    font-size: 6.5pt !important;
+    color: #555555 !important;
+    text-transform: uppercase !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.5px !important;
+  }
+
+  .meta-value {
+    font-size: 8.5pt !important;
+    font-weight: 700 !important;
+    color: #000000 !important;
+    margin-top: 1pt !important;
+  }
+
+  /* ==========================================================================
+     Routine Section & Full Timetable Table
+     ========================================================================== */
+  .section {
+    border: none !important;
+    box-shadow: none !important;
+    background: transparent !important;
+    margin: 0 0 10pt 0 !important;
+    padding: 0 !important;
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+  }
+
+  .section-head {
+    padding: 0 0 6pt 0 !important;
+    text-align: left !important;
+  }
+
+  .section-title {
+    font-size: 11pt !important;
+    font-weight: 800 !important;
+    color: #000000 !important;
+  }
+
+  .section-note {
+    font-size: 7.5pt !important;
+    color: #444444 !important;
+  }
+
+  /* Force Full-Width Desktop Timetable Table to Display in Print */
+  .desktop-wrap {
+    display: block !important;
+    width: 100% !important;
+    overflow: visible !important;
+    padding: 0 !important;
+    margin: 4pt 0 10pt 0 !important;
+  }
+
+  .routine-table {
+    display: table !important;
+    width: 100% !important;
+    min-width: 100% !important;
+    border-collapse: collapse !important;
+    border-spacing: 0 !important;
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+    font-size: 8pt !important;
+  }
+
+  .routine-table th,
+  .routine-table td {
+    border: 1pt solid #000000 !important;
+    border-radius: 0 !important;
+    padding: 4.5pt 3.5pt !important;
+    text-align: center !important;
+    vertical-align: middle !important;
+    background: #ffffff !important;
+    color: #000000 !important;
+  }
+
+  .routine-table th {
+    background-color: #f2f2f2 !important;
+    font-weight: 800 !important;
+    font-size: 8pt !important;
+  }
+
+  .routine-table th:first-child {
+    width: 75pt !important;
+    background-color: #e6e6e6 !important;
+    font-weight: 800 !important;
+  }
+
+  .routine-table .time-head {
+    display: block !important;
+    font-family: inherit !important;
+    font-size: 6.5pt !important;
+    font-weight: normal !important;
+    color: #333333 !important;
+    margin-top: 1.5pt !important;
+  }
+
+  .routine-table .day-cell {
+    background-color: #f7f7f7 !important;
+    font-weight: 800 !important;
+    font-size: 8.5pt !important;
+    line-height: 1.2 !important;
+  }
+
+  .routine-table .desk-class {
+    padding: 4pt 3pt !important;
+    background: #ffffff !important;
+  }
+
+  .routine-table .desk-sub {
+    font-size: 8pt !important;
+    font-weight: 700 !important;
+    line-height: 1.2 !important;
+    color: #000000 !important;
+  }
+
+  .routine-table .desk-code {
+    font-size: 7pt !important;
+    color: #333333 !important;
+    margin-top: 2pt !important;
+  }
+
+  .routine-table .desk-room {
+    display: inline-block !important;
+    font-size: 6.5pt !important;
+    font-weight: 700 !important;
+    border: 0.5pt solid #444444 !important;
+    padding: 1pt 3pt !important;
+    border-radius: 2pt !important;
+    margin-top: 2pt !important;
+    color: #000000 !important;
+    background: #fafafa !important;
+  }
+
+  .routine-table .empty {
+    color: #888888 !important;
+    font-size: 9pt !important;
+  }
+
+  /* ==========================================================================
+     Academic Statistics Section in Print
+     ========================================================================== */
+  #statsSection {
+    margin-top: 6pt !important;
+  }
+
+  .stats {
+    display: grid !important;
+    grid-template-columns: repeat(4, 1fr) !important;
+    gap: 8pt !important;
+    padding: 0 !important;
+  }
+
+  .stat {
+    border: 0.75pt solid #555555 !important;
+    border-radius: 3pt !important;
+    padding: 4pt !important;
+    text-align: center !important;
+    background: #fafafa !important;
+  }
+
+  .stat strong {
+    font-size: 11pt !important;
+    color: #000000 !important;
+    display: block !important;
+  }
+
+  .stat span {
+    font-size: 6.5pt !important;
+    color: #444444 !important;
+    text-transform: uppercase !important;
+    font-weight: 700 !important;
+  }
+
+  /* ==========================================================================
+     Faculty Directory Section in Print
+     ========================================================================== */
+  #faculty {
+    page-break-before: auto !important;
+    break-before: auto !important;
+    margin-top: 10pt !important;
+  }
+
+  .faculty-grid {
+    display: grid !important;
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 6pt !important;
+    padding: 0 !important;
+  }
+
+  .faculty-card {
+    border: 0.75pt solid #444444 !important;
+    border-radius: 3pt !important;
+    padding: 5pt 7pt !important;
+    display: grid !important;
+    grid-template-columns: 28pt 1fr !important;
+    gap: 6pt !important;
+    align-items: center !important;
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+  }
+
+  .avatar3d {
+    width: 26pt !important;
+    height: 26pt !important;
+    border: 1pt solid #000000 !important;
+    border-radius: 3pt !important;
+    font-size: 8.5pt !important;
+    font-weight: 800 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    background: #eeeeee !important;
+    color: #000000 !important;
+    transform: none !important;
+  }
+
+  .faculty-card h3 {
+    font-size: 8.5pt !important;
+    font-weight: 800 !important;
+    margin: 0 !important;
+  }
+
+  .faculty-card p {
+    font-size: 7pt !important;
+    color: #333333 !important;
+    margin: 1.5pt 0 0 0 !important;
+  }
+
+  .faculty-meta {
+    font-size: 6.5pt !important;
+    font-weight: 700 !important;
+    color: #000000 !important;
+    margin-top: 2pt !important;
+  }
+
+  /* ==========================================================================
+     Print Footer & Official Accreditation Credit
+     ========================================================================== */
+  .footer {
+    display: block !important;
+    border-top: 1.5pt solid #000000 !important;
+    margin-top: 12pt !important;
+    padding-top: 6pt !important;
+    text-align: center !important;
+    font-size: 7pt !important;
+    line-height: 1.4 !important;
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+  }
+
+  .footer strong {
+    font-weight: 800 !important;
+    color: #000000 !important;
+  }
+
+  .footer .credit {
+    margin-top: 2pt !important;
+    font-size: 6.5pt !important;
+    color: #333333 !important;
+  }
+
+  .footer .credit a {
+    text-decoration: underline !important;
+    color: #000000 !important;
+  }
+
+  .footer-links {
+    display: none !important;
+  }
+}
