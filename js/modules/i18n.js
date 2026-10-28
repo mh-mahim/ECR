@@ -80,6 +80,7 @@ export const TRANSLATIONS = {
     navRoutine: 'Routine',
     navFaculty: 'Faculty',
     navSettings: 'Settings',
+    navMore: 'More',
 
     // Notice
     dismissNotice: 'Dismiss'
@@ -154,6 +155,7 @@ export const TRANSLATIONS = {
     navRoutine: 'রুটিন',
     navFaculty: 'শিক্ষকবৃন্দ',
     navSettings: 'সেটিংস',
+    navMore: 'আরও',
 
     // Notice
     dismissNotice: 'মুছে ফেলুন'

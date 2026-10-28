@@ -1,0 +1,539 @@
+/* ==========================================================================
+   Hero Section Component (Now - Next Live Engine)
+   Material Design 3 (M3) System - ECR Routine Web
+   ========================================================================== */
+
+/* Hero Container */
+.hero-card,
+.hero-container {
+  position: relative;
+  background-color: var(--md-surface-container);
+  border: 1px solid var(--md-outline-variant);
+  border-radius: var(--shape-2xl);
+  padding: 20px;
+  box-shadow: var(--shadow-1);
+  overflow: hidden;
+  transition: background-color var(--motion-duration-medium) var(--motion-easing-standard),
+              border-color var(--motion-duration-medium) var(--motion-easing-standard),
+              box-shadow var(--motion-duration-medium) var(--motion-easing-standard);
+}
+
+/* Subtle decorative ambient electronics backdrop */
+.hero-card::before,
+.hero-container::before {
+  content: "";
+  position: absolute;
+  top: -50px;
+  right: -50px;
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  background: radial-gradient(circle, var(--md-primary-soft) 0%, transparent 70%);
+  pointer-events: none;
+  opacity: 0.85;
+}
+
+.hero-card::after,
+.hero-container::after {
+  content: "";
+  position: absolute;
+  bottom: -40px;
+  left: 20px;
+  width: 160px;
+  height: 100px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(92, 212, 255, 0.08) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+/* Header & Status Bar */
+.hero-header {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  margin-bottom: var(--space-4);
+}
+
+.hero-badges-group {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+}
+
+/* Status Pill */
+.hero-status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 14px;
+  border-radius: var(--shape-full);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  transition: all var(--motion-duration-short) var(--motion-easing-standard);
+  border: 1px solid var(--md-outline-variant);
+  background-color: var(--md-surface-container-high);
+  color: var(--md-on-surface);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+}
+
+/* Live Dot with Gentle Breath Animation */
+.hero-status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: currentColor;
+  flex-shrink: 0;
+  position: relative;
+}
+
+/* Status variants */
+.hero-status-pill.status-live {
+  background-color: var(--md-primary-soft);
+  color: var(--md-primary);
+  border-color: rgba(56, 225, 173, 0.38);
+  box-shadow: 0 0 14px rgba(56, 225, 173, 0.16);
+}
+
+.hero-status-pill.status-live .hero-status-dot {
+  background-color: var(--md-primary);
+  animation: heroDotBreathLive 2.2s ease-in-out infinite;
+}
+
+.hero-status-pill.status-next {
+  background-color: rgba(92, 212, 255, 0.12);
+  color: var(--md-tertiary);
+  border-color: rgba(92, 212, 255, 0.35);
+}
+
+.hero-status-pill.status-next .hero-status-dot {
+  background-color: var(--md-tertiary);
+  animation: heroDotBreathNext 2.8s ease-in-out infinite;
+}
+
+.hero-status-pill.status-break {
+  background-color: rgba(251, 200, 104, 0.12);
+  color: var(--md-warning);
+  border-color: rgba(251, 200, 104, 0.35);
+}
+
+.hero-status-pill.status-break .hero-status-dot {
+  background-color: var(--md-warning);
+  animation: heroDotBreathBreak 2.4s ease-in-out infinite;
+}
+
+.hero-status-pill.status-finished {
+  background-color: var(--md-surface-container-high);
+  color: var(--md-on-surface-variant);
+  border-color: var(--md-outline-variant);
+}
+
+.hero-status-pill.status-finished .hero-status-dot {
+  background-color: var(--md-secondary);
+  opacity: 0.8;
+}
+
+.hero-status-pill.status-weekend {
+  background-color: var(--md-surface-container-high);
+  color: var(--md-on-surface-variant);
+  border-color: var(--md-outline-variant);
+}
+
+.hero-status-pill.status-weekend .hero-status-dot {
+  background-color: var(--md-outline);
+  opacity: 0.6;
+}
+
+/* Gentle Breath Keyframes */
+@keyframes heroDotBreathLive {
+  0%, 100% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(56, 225, 173, 0.6);
+  }
+  50% {
+    transform: scale(1.25);
+    box-shadow: 0 0 0 6px rgba(56, 225, 173, 0);
+  }
+}
+
+@keyframes heroDotBreathNext {
+  0%, 100% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(92, 212, 255, 0.5);
+  }
+  50% {
+    transform: scale(1.2);
+    box-shadow: 0 0 0 5px rgba(92, 212, 255, 0);
+  }
+}
+
+@keyframes heroDotBreathBreak {
+  0%, 100% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(251, 200, 104, 0.5);
+  }
+  50% {
+    transform: scale(1.2);
+    box-shadow: 0 0 0 5px rgba(251, 200, 104, 0);
+  }
+}
+
+/* Disable animation on prefers-reduced-motion */
+@media (prefers-reduced-motion: reduce) {
+  .hero-status-dot,
+  .hero-status-pill.status-live .hero-status-dot,
+  .hero-status-pill.status-next .hero-status-dot,
+  .hero-status-pill.status-break .hero-status-dot {
+    animation: none !important;
+    transform: none !important;
+    box-shadow: none !important;
+  }
+  .hero-progress-bar {
+    transition: none !important;
+  }
+}
+
+/* Secondary Meta Badges */
+.hero-batch-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 5px 11px;
+  border-radius: var(--shape-full);
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  background-color: var(--md-surface-container-low);
+  border: 1px solid var(--md-outline-variant);
+  color: var(--md-on-surface-variant);
+}
+
+.hero-batch-badge.badge-primary {
+  color: var(--md-primary);
+  border-color: rgba(56, 225, 173, 0.25);
+  background-color: var(--md-primary-soft);
+}
+
+/* Dhaka Live Clock Chip */
+.hero-clock-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--md-on-surface-variant);
+  background-color: var(--md-surface-container-low);
+  border: 1px solid var(--md-outline-variant);
+  padding: 5px 12px;
+  border-radius: var(--shape-full);
+  margin-left: auto;
+}
+
+.hero-clock-icon {
+  width: 14px;
+  height: 14px;
+  opacity: 0.75;
+  flex-shrink: 0;
+}
+
+/* Hero Body Section */
+.hero-body {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  margin-bottom: var(--space-4);
+}
+
+@media (min-width: 680px) {
+  .hero-body {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: center;
+    gap: var(--space-6);
+  }
+}
+
+/* Active Subject Headline */
+.hero-subject-area {
+  min-width: 0;
+}
+
+.hero-kicker {
+  display: block;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--md-primary);
+  margin-bottom: 6px;
+}
+
+.hero-headline {
+  font: var(--type-headline-large);
+  color: var(--md-on-surface);
+  font-weight: 700;
+  margin: 0;
+  word-break: break-word;
+  line-height: 1.25;
+  letter-spacing: -0.015em;
+}
+
+@media (min-width: 768px) {
+  .hero-headline {
+    font-size: 1.85rem;
+    line-height: 1.2;
+  }
+}
+
+.hero-subtitle {
+  margin-top: 8px;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px 14px;
+  font-size: 0.875rem;
+  color: var(--md-on-surface-variant);
+  line-height: 1.45;
+}
+
+.hero-sub-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.hero-icon-sm {
+  width: 15px;
+  height: 15px;
+  opacity: 0.75;
+  flex-shrink: 0;
+}
+
+.hero-sub-chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 8px;
+  border-radius: var(--shape-xs);
+  font-size: 0.75rem;
+  font-weight: 700;
+  border: 1px solid transparent;
+}
+
+.hero-sub-chip.chip-lab {
+  background-color: rgba(92, 212, 255, 0.14);
+  color: var(--md-tertiary);
+  border-color: rgba(92, 212, 255, 0.28);
+}
+
+.hero-sub-chip.chip-theory {
+  background-color: var(--md-primary-soft);
+  color: var(--md-primary);
+  border-color: rgba(56, 225, 173, 0.28);
+}
+
+/* Countdown Timer */
+.hero-timer-box {
+  background-color: var(--md-surface-container-low);
+  border: 1px solid var(--md-outline-variant);
+  border-radius: var(--shape-lg);
+  padding: 12px 18px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-width: 156px;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.03);
+}
+
+@media (max-width: 679px) {
+  .hero-timer-box {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    padding: 11px 16px;
+  }
+}
+
+.hero-timer-label {
+  font-size: 0.6875rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--md-on-surface-variant);
+  margin-bottom: 2px;
+}
+
+.hero-timer-digits {
+  font-family: var(--font-mono);
+  font-size: 1.75rem;
+  font-weight: 700;
+  line-height: 1.1;
+  color: var(--md-primary);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.02em;
+}
+
+@media (min-width: 768px) {
+  .hero-timer-digits {
+    font-size: 2.1rem;
+  }
+}
+
+.hero-timer-sub {
+  font-size: 0.6875rem;
+  color: var(--md-on-surface-variant);
+  margin-top: 3px;
+  font-family: var(--font-sans);
+}
+
+/* Progress Bar (6px height, rounded full, smooth width transition) */
+.hero-progress-container {
+  position: relative;
+  z-index: 2;
+  margin-top: var(--space-1);
+  margin-bottom: var(--space-4);
+}
+
+.hero-progress-track {
+  height: 6px;
+  border-radius: var(--shape-full);
+  background-color: var(--md-surface-container-highest);
+  overflow: hidden;
+  position: relative;
+}
+
+.hero-progress-bar {
+  height: 100%;
+  border-radius: var(--shape-full);
+  background: linear-gradient(90deg, var(--md-primary), var(--md-tertiary));
+  width: 0%;
+  transition: width 0.6s var(--motion-easing-standard);
+  box-shadow: 0 0 10px rgba(56, 225, 173, 0.4);
+}
+
+/* Up-Next Ticker (upcoming class preview) */
+.hero-next-ticker {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  background-color: var(--md-surface-container-lowest);
+  border: 1px dashed var(--md-outline-variant);
+  border-radius: var(--shape-md);
+  font-size: 0.8125rem;
+  color: var(--md-on-surface-variant);
+  margin-bottom: var(--space-4);
+}
+
+.hero-next-ticker strong {
+  color: var(--md-on-surface);
+}
+
+.hero-next-ticker-label {
+  font-weight: 700;
+  text-transform: uppercase;
+  font-size: 0.6875rem;
+  color: var(--md-tertiary);
+  letter-spacing: 0.05em;
+  flex-shrink: 0;
+}
+
+/* Academic Info Chips (Class Teacher, Total Load, Working Days, CNPI) */
+.hero-chips-grid {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-2);
+}
+
+@media (min-width: 640px) {
+  .hero-chips-grid {
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--space-3);
+  }
+}
+
+.hero-chip {
+  background-color: var(--md-surface-container-low);
+  border: 1px solid var(--md-outline-variant);
+  border-radius: var(--shape-md);
+  padding: 10px 12px;
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  transition: transform var(--motion-duration-short) ease,
+              border-color var(--motion-duration-short) ease,
+              background-color var(--motion-duration-short) ease,
+              box-shadow var(--motion-duration-short) ease;
+}
+
+.hero-chip:hover {
+  border-color: var(--md-outline);
+  background-color: var(--md-surface-container-high);
+  box-shadow: var(--shadow-1);
+}
+
+.hero-chip-icon {
+  width: 28px;
+  height: 28px;
+  border-radius: var(--shape-sm);
+  background-color: var(--md-primary-soft);
+  color: var(--md-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.hero-chip-icon svg {
+  width: 16px;
+  height: 16px;
+}
+
+.hero-chip-content {
+  min-width: 0;
+  flex: 1;
+}
+
+.hero-chip-label {
+  display: block;
+  font-size: 0.625rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--md-on-surface-variant);
+  line-height: 1.2;
+}
+
+.hero-chip-value {
+  display: block;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  color: var(--md-on-surface);
+  line-height: 1.3;
+  margin-top: 2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.hero-chip-sub {
+  display: block;
+  font-size: 0.625rem;
+  color: var(--md-on-surface-variant);
+  margin-top: 1px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

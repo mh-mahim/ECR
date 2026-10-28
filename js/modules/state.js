@@ -31,7 +31,8 @@ class Store {
       searchQuery: '',
       filterType: 'all', // 'all' | 'lab' | 'theory'
       activeModal: null, // null | { type: 'class' | 'faculty' | 'notice', data: ... }
-      noticeDismissed: savedNoticeDismissed
+      noticeDismissed: savedNoticeDismissed,
+      activeSection: 'today' // 'today' | 'routine' | 'faculty' | 'more'
     };
 
     this.listeners = new Set();
@@ -118,6 +119,12 @@ class Store {
     this.state.noticeDismissed = true;
     localStorage.setItem(STORAGE_KEY_NOTICE, 'true');
     this.notify(['noticeDismissed']);
+  }
+
+  setActiveSection(section) {
+    if (this.state.activeSection === section) return;
+    this.state.activeSection = section;
+    this.notify(['activeSection']);
   }
 }
 
