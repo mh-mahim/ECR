@@ -47,7 +47,7 @@ export const getDhakaNow = () => {
     map[part.type] = part.value;
   }
 
-  const hours = parseInt(map.hour, 10);
+  const hours = parseInt(map.hour, 10) % 24;
   const minutes = parseInt(map.minute, 10);
   const seconds = parseInt(map.second, 10);
   const dayName = map.weekday; // 'Sunday', 'Monday', etc.

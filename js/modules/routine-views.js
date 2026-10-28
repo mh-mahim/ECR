@@ -57,6 +57,20 @@ const doesBlockMatch = (block, filterType = 'all', searchQuery = '') => {
   const query = (searchQuery || '').trim().toLowerCase();
   if (!query) return true;
 
+  const teacherCode = (block.teacher || '').toLowerCase();
+  // Exact match for teacher short-code
+  if (teacherCode === query) {
+    return true;
+  }
+
+  // Teacher short-code collision guard:
+  // If the query is an exact match for another known teacher code (e.g. 'az', 'azr', 'ha', 'ds', 'mhr', 'msh', 'mas'),
+  // then it was specifically aimed at that teacher. Reject non-matching teacher codes immediately.
+  const allTeacherCodes = ['ha', 'az', 'ds', 'azr', 'mhr', 'msh', 'mas'];
+  if (allTeacherCodes.includes(query)) {
+    return false;
+  }
+
   const teacher = getTeacherByCode(block.teacher);
   const subj = SUBJECTS[block.course];
 
@@ -189,276 +203,265 @@ export const renderRoutineViews = (containerEl) => {
     `;
 
     // 2. Day Tabs Bar (Rendered for Day View: sticky, horizontal scroll with hidden scrollbar, M3 pills)
-    let dayTabsHtml = '';
-    if (isDayView) {
-      dayTabsHtml = `
-        <div class="day-tabs-bar-wrapper">
-          <div class="day-tabs-scroll" role="tablist" aria-label="Select day">
-            ${WORKING_DAYS.map(day => {
-              const isSelected = selectedDay === day.id;
-              const isToday = dhakaNow.day === day.id;
-              const dayName = lang === 'bn' ? day.bn : day.en;
-              const dayShort = lang === 'bn' ? day.shortBn : day.shortEn;
+    const dayTabsHtml = `
+      <div class="day-tabs-bar-wrapper ${!isDayView ? 'view-hidden' : ''}">
+        <div class="day-tabs-scroll" role="tablist" aria-label="Select day">
+          ${WORKING_DAYS.map(day => {
+            const isSelected = selectedDay === day.id;
+            const isToday = dhakaNow.day === day.id;
+            const dayName = lang === 'bn' ? day.bn : day.en;
+            const dayShort = lang === 'bn' ? day.shortBn : day.shortEn;
 
-              return `
-                <button
-                  type="button"
-                  role="tab"
-                  aria-selected="${isSelected}"
-                  class="day-tab-pill ${isSelected ? 'active' : ''} ${isToday ? 'is-today' : ''}"
-                  data-action="select-day"
-                  data-day="${day.id}"
-                >
-                  <span class="day-tab-pill-name">${dayName}</span>
-                  <span class="day-tab-pill-sub">${dayShort}</span>
-                  ${isToday ? `<span class="day-tab-today-badge">${t('today', lang)}</span>` : ''}
-                </button>
-              `;
-            }).join('')}
-          </div>
+            return `
+              <button
+                type="button"
+                role="tab"
+                aria-selected="${isSelected}"
+                class="day-tab-pill ${isSelected ? 'active' : ''} ${isToday ? 'is-today' : ''}"
+                data-action="select-day"
+                data-day="${day.id}"
+              >
+                <span class="day-tab-pill-name">${dayName}</span>
+                <span class="day-tab-pill-sub">${dayShort}</span>
+                ${isToday ? `<span class="day-tab-today-badge">${t('today', lang)}</span>` : ''}
+              </button>
+            `;
+          }).join('')}
+        </div>
+      </div>
+    `;
+
+    // 3. Day View Content (filtered blocks for selected day)
+    const rawBlocks = getMergedDayClasses(selectedDay, RAW_ROUTINE);
+    const filteredBlocks = rawBlocks.filter(block => doesBlockMatch(block, filterType, searchQuery));
+
+    const selectedDayObj = WORKING_DAYS.find(d => d.id === selectedDay) || WORKING_DAYS[0];
+    const selectedDayLabel = lang === 'bn' ? selectedDayObj.bn : selectedDayObj.en;
+
+    // Day Summary Header
+    const countLabel = lang === 'bn' ? `${toBanglaDigits(filteredBlocks.length)} টি ক্লাস` 
+      : `${filteredBlocks.length} ${filteredBlocks.length === 1 ? 'class' : 'classes'}`;
+
+    let classListHtml = '';
+
+    if (filteredBlocks.length === 0) {
+      classListHtml = `
+        <div class="views-empty-state">
+          <svg class="views-empty-icon" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+          <div class="views-empty-title">${t('noSearchResults', lang)}</div>
+          <p class="views-empty-desc">${lang === 'bn' ? 'নির্বাচিত দিনে বা ফিল্টারে কোনো ক্লাস খুঁজে পাওয়া যায়নি।' : 'No classes match your current day, filter or search term.'}</p>
+          ${(filterType !== 'all' || searchQuery) ? `
+            <button type="button" class="views-clear-btn" data-action="reset-filters">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18M6 6l12 12"/></svg>
+              <span>${t('clearSearch', lang)}</span>
+            </button>
+          ` : ''}
         </div>
       `;
+    } else {
+      classListHtml = filteredBlocks.map(block => {
+        const isLive = isBlockLiveNow(selectedDay, block.startMinutes, block.endMinutes, dhakaNow);
+        const isLab = block.type?.toLowerCase() === 'lab';
+        const payload = buildClassPayload(block, lang, isLive);
+
+        const payloadKey = `card-${block.day}-${block.p}`;
+        classPayloadMap.set(payloadKey, payload);
+
+        const startP = PERIODS.find(p => p.id === block.periodStart);
+        const endP = PERIODS.find(p => p.id === block.periodEnd);
+
+        const startPName = lang === 'bn' ? (startP?.name?.bn || `${block.periodStart}`) : (startP?.name?.en || `${block.periodStart}`);
+        const endPName = lang === 'bn' ? (endP?.name?.bn || `${block.periodEnd}`) : (endP?.name?.en || `${block.periodEnd}`);
+
+        const periodTag = block.span > 1 
+          ? `${startPName}–${endPName}` 
+          : `${startPName}`;
+
+        const typeLabel = isLab ? t('lab', lang) : t('theory', lang);
+
+        return `
+          <article 
+            class="class-card ${isLive ? 'is-live' : ''}" 
+            data-action="open-class-modal" 
+            data-payload-key="${payloadKey}"
+            tabindex="0"
+            role="button"
+            aria-label="${esc(payload.localizedSubject)}, ${periodTag}"
+          >
+            <!-- Live Indicator Pill -->
+            ${isLive ? `
+              <div class="live-class-pill">
+                <span class="pulse-live-dot"></span>
+                <span>${t('inClass', lang)}</span>
+              </div>
+            ` : ''}
+
+            <!-- Column 1: Time Slot Badge (Left vertical column) -->
+            <div class="slot-badge-column">
+              <span class="slot-period-tag">${periodTag}</span>
+              <div class="slot-time-range">
+                <span>${formatTime(block.startTime, lang)}</span>
+                <span class="slot-time-arrow">${t('to', lang)}</span>
+                <span class="slot-time-end">${formatTime(block.endTime, lang)}</span>
+              </div>
+            </div>
+
+            <!-- Column 2: Class Info (Middle column) -->
+            <div class="class-info-column">
+              <h3 class="class-subject-title">${esc(payload.localizedSubject)}</h3>
+              
+              <div class="class-teacher-row">
+                <span class="teacher-name-text">${esc(payload.localizedTeacher)}</span>
+                <span class="teacher-code-pill">${esc(block.teacher)}</span>
+              </div>
+
+              <div class="class-chips-row">
+                <span class="info-chip chip-code" title="${t('courseCode', lang)}">
+                  <svg viewBox="0 0 24 24"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+                  <span>${lang === 'bn' ? toBanglaDigits(block.course) : block.course}</span>
+                </span>
+
+                <span class="info-chip ${isLab ? 'chip-lab' : 'chip-theory'}">
+                  ${isLab 
+                    ? `<svg viewBox="0 0 24 24"><path d="M10 2v7.31L4.17 18.2A2 2 0 0 0 5.86 21h12.28a2 2 0 0 0 1.69-2.8L14 9.31V2"/></svg>` 
+                    : `<svg viewBox="0 0 24 24"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5Z"/></svg>`
+                  }
+                  <span>${typeLabel}</span>
+                </span>
+
+                <span class="info-chip chip-room" title="${t('room', lang)}">
+                  <svg viewBox="0 0 24 24"><path d="M3 21h18M3 7v14M21 7v14M6 3h12a3 3 0 0 1 3 3v1H3V6a3 3 0 0 1 3-3z"/></svg>
+                  <span>${esc(block.room)}</span>
+                </span>
+              </div>
+            </div>
+
+            <!-- Column 3: Arrow / Action (Right column) -->
+            <div class="class-action-column" aria-hidden="true">
+              <svg class="action-arrow-icon" viewBox="0 0 24 24">
+                <polyline points="9 18 15 12 9 6"></polyline>
+              </svg>
+            </div>
+          </article>
+        `;
+      }).join('');
     }
 
-    // 3. View Content (Day View OR Week View Timetable Matrix)
-    let contentHtml = '';
-
-    if (isDayView) {
-      // Fetch merged blocks for selected day
-      const rawBlocks = getMergedDayClasses(selectedDay, RAW_ROUTINE);
-      const filteredBlocks = rawBlocks.filter(block => doesBlockMatch(block, filterType, searchQuery));
-
-      const selectedDayObj = WORKING_DAYS.find(d => d.id === selectedDay) || WORKING_DAYS[0];
-      const selectedDayLabel = lang === 'bn' ? selectedDayObj.bn : selectedDayObj.en;
-
-      // Day Summary Header
-      const countLabel = lang === 'bn' 
-        ? `${toBanglaDigits(filteredBlocks.length)} টি ক্লাস` 
-        : `${filteredBlocks.length} ${filteredBlocks.length === 1 ? 'class' : 'classes'}`;
-
-      let classListHtml = '';
-
-      if (filteredBlocks.length === 0) {
-        classListHtml = `
-          <div class="views-empty-state">
-            <svg class="views-empty-icon" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
-            <div class="views-empty-title">${t('noSearchResults', lang)}</div>
-            <p class="views-empty-desc">${lang === 'bn' ? 'নির্বাচিত দিনে বা ফিল্টারে কোনো ক্লাস খুঁজে পাওয়া যায়নি।' : 'No classes match your current day, filter or search term.'}</p>
-            ${(filterType !== 'all' || searchQuery) ? `
-              <button type="button" class="views-clear-btn" data-action="reset-filters">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18M6 6l12 12"/></svg>
-                <span>${t('clearSearch', lang)}</span>
-              </button>
-            ` : ''}
+    const dayViewHtml = `
+      <div class="day-view-container ${!isDayView ? 'view-hidden' : ''}">
+        <div class="day-summary-bar">
+          <div class="day-summary-title">
+            <span class="day-summary-dot"></span>
+            <span>${selectedDayLabel}</span>
           </div>
-        `;
-      } else {
-        classListHtml = filteredBlocks.map(block => {
-          const isLive = isBlockLiveNow(selectedDay, block.startMinutes, block.endMinutes, dhakaNow);
+          <div class="day-summary-count">${countLabel}</div>
+        </div>
+        <div class="day-classes-list">
+          ${classListHtml}
+        </div>
+      </div>
+    `;
+
+    // 4. Week View: Timetable Matrix
+    const tableHeadHtml = `
+      <thead>
+        <tr>
+          <th>
+            <span class="matrix-th-title">${lang === 'bn' ? 'দিন / সময়' : 'Day / Time'}</span>
+          </th>
+          ${PERIODS.map(period => {
+            const pName = lang === 'bn' ? period.name.bn : period.name.en;
+            return `
+              <th>
+                <span class="matrix-th-title">${pName} ${t('period', lang)}</span>
+                <span class="matrix-th-time">${formatTime(period.start, lang)} – ${formatTime(period.end, lang)}</span>
+              </th>
+            `;
+          }).join('')}
+        </tr>
+      </thead>
+    `;
+
+    let tableBodyRows = '';
+
+    for (const day of WORKING_DAYS) {
+      const isToday = dhakaNow.day === day.id;
+      const dayName = lang === 'bn' ? day.bn : day.en;
+      const dayShort = lang === 'bn' ? day.shortBn : day.shortEn;
+
+      // Fetch merged blocks for this day
+      const dayBlocks = getMergedDayClasses(day.id, RAW_ROUTINE);
+
+      let rowCellsHtml = '';
+      let p = 1;
+
+      while (p <= 7) {
+        const block = dayBlocks.find(b => b.periodStart === p);
+
+        if (block) {
+          const span = block.span || 1;
+          const isLive = isBlockLiveNow(day.id, block.startMinutes, block.endMinutes, dhakaNow);
           const isLab = block.type?.toLowerCase() === 'lab';
+          const matchesFilter = doesBlockMatch(block, filterType, searchQuery);
           const payload = buildClassPayload(block, lang, isLive);
 
-          const payloadKey = `card-${block.day}-${block.p}`;
+          const payloadKey = `week-${day.id}-${block.p}`;
           classPayloadMap.set(payloadKey, payload);
 
-          const startP = PERIODS.find(p => p.id === block.periodStart);
-          const endP = PERIODS.find(p => p.id === block.periodEnd);
-
-          const startPName = lang === 'bn' ? (startP?.name?.bn || `${block.periodStart}`) : (startP?.name?.en || `${block.periodStart}`);
-          const endPName = lang === 'bn' ? (endP?.name?.bn || `${block.periodEnd}`) : (endP?.name?.en || `${block.periodEnd}`);
-
-          const periodTag = block.span > 1 
-            ? `${startPName}–${endPName}` 
-            : `${startPName}`;
-
-          const typeLabel = isLab ? t('lab', lang) : t('theory', lang);
-
-          return `
-            <article 
-              class="class-card ${isLive ? 'is-live' : ''}" 
+          rowCellsHtml += `
+            <td 
+              colspan="${span}" 
+              class="matrix-class-cell ${isLab ? 'is-lab' : ''} ${isLive ? 'is-live' : ''} ${!matchesFilter ? 'is-dimmed' : ''}" 
               data-action="open-class-modal" 
               data-payload-key="${payloadKey}"
               tabindex="0"
               role="button"
-              aria-label="${esc(payload.localizedSubject)}, ${periodTag}"
+              aria-label="${esc(payload.localizedSubject)} (${dayName}, Period ${block.p})"
             >
-              <!-- Live Indicator Pill -->
-              ${isLive ? `
-                <div class="live-class-pill">
-                  <span class="pulse-live-dot"></span>
-                  <span>${t('inClass', lang)}</span>
-                </div>
-              ` : ''}
-
-              <!-- Column 1: Time Slot Badge (Left vertical column) -->
-              <div class="slot-badge-column">
-                <span class="slot-period-tag">${periodTag}</span>
-                <div class="slot-time-range">
-                  <span>${formatTime(block.startTime, lang)}</span>
-                  <span class="slot-time-arrow">${t('to', lang)}</span>
-                  <span class="slot-time-end">${formatTime(block.endTime, lang)}</span>
-                </div>
+              <div class="matrix-cell-content">
+                <div class="matrix-cell-subject">${esc(payload.localizedSubject)}</div>
+                <div class="matrix-cell-meta">${esc(block.course)} • ${esc(block.teacher)}</div>
+                <div class="matrix-cell-room">${esc(block.room)}</div>
               </div>
-
-              <!-- Column 2: Class Info (Middle column) -->
-              <div class="class-info-column">
-                <h3 class="class-subject-title">${esc(payload.localizedSubject)}</h3>
-                
-                <div class="class-teacher-row">
-                  <span class="teacher-name-text">${esc(payload.localizedTeacher)}</span>
-                  <span class="teacher-code-pill">${esc(block.teacher)}</span>
-                </div>
-
-                <div class="class-chips-row">
-                  <span class="info-chip chip-code" title="${t('courseCode', lang)}">
-                    <svg viewBox="0 0 24 24"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
-                    <span>${lang === 'bn' ? toBanglaDigits(block.course) : block.course}</span>
-                  </span>
-
-                  <span class="info-chip ${isLab ? 'chip-lab' : 'chip-theory'}">
-                    ${isLab 
-                      ? `<svg viewBox="0 0 24 24"><path d="M10 2v7.31L4.17 18.2A2 2 0 0 0 5.86 21h12.28a2 2 0 0 0 1.69-2.8L14 9.31V2"/></svg>` 
-                      : `<svg viewBox="0 0 24 24"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5Z"/></svg>`
-                    }
-                    <span>${typeLabel}</span>
-                  </span>
-
-                  <span class="info-chip chip-room" title="${t('room', lang)}">
-                    <svg viewBox="0 0 24 24"><path d="M3 21h18M3 7v14M21 7v14M6 3h12a3 3 0 0 1 3 3v1H3V6a3 3 0 0 1 3-3z"/></svg>
-                    <span>${esc(block.room)}</span>
-                  </span>
-                </div>
-              </div>
-
-              <!-- Column 3: Arrow / Action (Right column) -->
-              <div class="class-action-column" aria-hidden="true">
-                <svg class="action-arrow-icon" viewBox="0 0 24 24">
-                  <polyline points="9 18 15 12 9 6"></polyline>
-                </svg>
-              </div>
-            </article>
-          `;
-        }).join('');
-      }
-
-      contentHtml = `
-        <div class="day-view-container">
-          <div class="day-summary-bar">
-            <div class="day-summary-title">
-              <span class="day-summary-dot"></span>
-              <span>${selectedDayLabel}</span>
-            </div>
-            <div class="day-summary-count">${countLabel}</div>
-          </div>
-          <div class="day-classes-list">
-            ${classListHtml}
-          </div>
-        </div>
-      `;
-    } else {
-      // 4. Week View: Timetable Matrix
-      // Horizontal scroll container with custom scrollbar
-      // Table with sticky day header column
-      // Correct colspans for 2-period lab blocks (so they span across 2 period columns seamlessly)
-      // High-contrast text, room pills, live cell highlight
-      const tableHeadHtml = `
-        <thead>
-          <tr>
-            <th>
-              <span class="matrix-th-title">${lang === 'bn' ? 'দিন / সময়' : 'Day / Time'}</span>
-            </th>
-            ${PERIODS.map(period => {
-              const pName = lang === 'bn' ? period.name.bn : period.name.en;
-              return `
-                <th>
-                  <span class="matrix-th-title">${pName} ${t('period', lang)}</span>
-                  <span class="matrix-th-time">${formatTime(period.start, lang)} – ${formatTime(period.end, lang)}</span>
-                </th>
-              `;
-            }).join('')}
-          </tr>
-        </thead>
-      `;
-
-      let tableBodyRows = '';
-
-      for (const day of WORKING_DAYS) {
-        const isToday = dhakaNow.day === day.id;
-        const dayName = lang === 'bn' ? day.bn : day.en;
-        const dayShort = lang === 'bn' ? day.shortBn : day.shortEn;
-
-        // Fetch merged blocks for this day
-        const dayBlocks = getMergedDayClasses(day.id, RAW_ROUTINE);
-
-        let rowCellsHtml = '';
-        let p = 1;
-
-        while (p <= 7) {
-          const block = dayBlocks.find(b => b.periodStart === p);
-
-          if (block) {
-            const span = block.span || 1;
-            const isLive = isBlockLiveNow(day.id, block.startMinutes, block.endMinutes, dhakaNow);
-            const isLab = block.type?.toLowerCase() === 'lab';
-            const matchesFilter = doesBlockMatch(block, filterType, searchQuery);
-            const payload = buildClassPayload(block, lang, isLive);
-
-            const payloadKey = `week-${day.id}-${block.p}`;
-            classPayloadMap.set(payloadKey, payload);
-
-            rowCellsHtml += `
-              <td 
-                colspan="${span}" 
-                class="matrix-class-cell ${isLab ? 'is-lab' : ''} ${isLive ? 'is-live' : ''} ${!matchesFilter ? 'is-dimmed' : ''}" 
-                data-action="open-class-modal" 
-                data-payload-key="${payloadKey}"
-                tabindex="0"
-                role="button"
-                aria-label="${esc(payload.localizedSubject)} (${dayName}, Period ${block.p})"
-              >
-                <div class="matrix-cell-content">
-                  <div class="matrix-cell-subject">${esc(payload.localizedSubject)}</div>
-                  <div class="matrix-cell-meta">${esc(block.course)} • ${esc(block.teacher)}</div>
-                  <div class="matrix-cell-room">${esc(block.room)}</div>
-                </div>
-                ${isLive ? `<span class="matrix-live-badge">${t('inClass', lang)}</span>` : ''}
-              </td>
-            `;
-
-            p += span;
-          } else {
-            rowCellsHtml += `
-              <td colspan="1" class="matrix-empty-cell" aria-label="No class">—</td>
-            `;
-            p += 1;
-          }
-        }
-
-        tableBodyRows += `
-          <tr>
-            <td class="matrix-day-cell ${isToday ? 'is-today' : ''}">
-              <span class="matrix-day-name">${dayName}</span>
-              <span class="matrix-day-short">${dayShort}</span>
-              ${isToday ? `<span class="matrix-day-today-tag">${t('today', lang)}</span>` : ''}
+              ${isLive ? `<span class="matrix-live-badge">${t('inClass', lang)}</span>` : ''}
             </td>
-            ${rowCellsHtml}
-          </tr>
-        `;
+          `;
+
+          p += span;
+        } else {
+          rowCellsHtml += `
+            <td colspan="1" class="matrix-empty-cell" aria-label="No class">—</td>
+          `;
+          p += 1;
+        }
       }
 
-      contentHtml = `
-        <div class="week-view-container">
-          <div class="week-matrix-scroll-wrapper" tabindex="0" role="region" aria-label="${t('weekView', lang)}">
-            <table class="week-matrix-table">
-              ${tableHeadHtml}
-              <tbody>
-                ${tableBodyRows}
-              </tbody>
-            </table>
-          </div>
-        </div>
+      tableBodyRows += `
+        <tr>
+          <td class="matrix-day-cell ${isToday ? 'is-today' : ''}">
+            <span class="matrix-day-name">${dayName}</span>
+            <span class="matrix-day-short">${dayShort}</span>
+            ${isToday ? `<span class="matrix-day-today-tag">${t('today', lang)}</span>` : ''}
+          </td>
+          ${rowCellsHtml}
+        </tr>
       `;
     }
+
+    const weekViewHtml = `
+      <div class="week-view-container ${isDayView ? 'view-hidden' : ''}">
+        <div class="week-matrix-scroll-wrapper" tabindex="0" role="region" aria-label="${t('weekView', lang)}">
+          <table class="week-matrix-table">
+            ${tableHeadHtml}
+            <tbody>
+              ${tableBodyRows}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    `;
+
+    const contentHtml = dayViewHtml + weekViewHtml;
 
     // Assemble outer container HTML
     containerEl.innerHTML = `

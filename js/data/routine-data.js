@@ -116,10 +116,6 @@ export const SUBJECTS = {
   }
 };
 
-/**
- * Raw period-by-period class slots.
- * Spanning logic merges consecutive periods with identical subject, teacher, and room.
- */
 export const RAW_ROUTINE = [
   // Sunday
   { day: 'Sunday', p: 1, subject: 'Electrical Installation, Planning and Estimating', course: '26741', teacher: 'MSH', room: 'N-312', type: 'Theory' },

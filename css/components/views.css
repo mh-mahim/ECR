@@ -37,13 +37,17 @@
   width: fit-content;
 }
 
+.view-hidden {
+  display: none !important;
+}
+
 .view-segment-btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: var(--space-2);
   padding: 8px 18px;
-  min-height: 38px;
+  min-height: 44px;
   border-radius: var(--shape-full);
   font: var(--type-label-large);
   color: var(--md-on-surface-variant);
@@ -54,6 +58,16 @@
   transition: all var(--motion-duration-short) var(--motion-easing-standard);
   position: relative;
   z-index: 1;
+}
+
+.view-segment-btn::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  min-width: 48px;
+  min-height: 48px;
 }
 
 .view-segment-btn svg {
@@ -103,7 +117,7 @@
   align-items: center;
   gap: var(--space-1);
   padding: 6px 14px;
-  min-height: 32px;
+  min-height: 38px;
   border-radius: var(--shape-full);
   font: var(--type-label-medium);
   color: var(--md-on-surface-variant);
@@ -111,7 +125,18 @@
   border: 1px solid var(--md-outline-variant);
   cursor: pointer;
   white-space: nowrap;
+  position: relative;
   transition: all var(--motion-duration-short) var(--motion-easing-standard);
+}
+
+.filter-chip-btn::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  min-width: 48px;
+  min-height: 48px;
 }
 
 .filter-chip-btn:hover {

@@ -4,7 +4,7 @@
  * Offline caching with resilient fallback and asset versioning.
  */
 
-const CACHE_NAME = 'ent-pulse-v7-2026-m3';
+const CACHE_NAME = 'ent-pulse-v8-2026-m3';
 
 const CORE_ASSETS = [
   './',
@@ -14,15 +14,25 @@ const CORE_ASSETS = [
   './css/tokens.css',
   './css/base.css',
   './css/print.css',
+  './css/components/nav.css',
+  './css/components/hero.css',
   './css/components/notices.css',
+  './css/components/views.css',
+  './css/components/search.css',
+  './css/components/modals.css',
   './icons/icon.svg',
   './icons/icon-192.png',
   './icons/icon-512.png',
+  './js/app.js',
   './js/data/routine-data.js',
   './js/data/faculty-data.js',
   './js/modules/state.js',
   './js/modules/time-engine.js',
   './js/modules/i18n.js',
+  './js/modules/nav.js',
+  './js/modules/hero.js',
+  './js/modules/routine-views.js',
+  './js/modules/search-modals.js',
   './js/modules/utilities.js'
 ];
 
