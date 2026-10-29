@@ -27,7 +27,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: var(--space-3, 0.75rem);
+  gap: var(--space-2, 0.5rem);
   max-width: var(--content-max-width, 1200px);
   margin: 0 auto;
   padding: var(--space-2, 0.5rem) var(--space-4, 1rem);
@@ -38,13 +38,14 @@
 .topbar-brand {
   display: flex;
   align-items: center;
-  gap: var(--space-3, 0.75rem);
+  gap: var(--space-2, 0.5rem);
   text-decoration: none;
   color: var(--md-on-surface, #e0f2eb);
   min-width: 0;
   border-radius: var(--shape-md, 12px);
   cursor: pointer;
   user-select: none;
+  flex: 1 1 auto;
   transition: opacity var(--motion-duration-short, 150ms) ease;
 }
 
@@ -57,35 +58,45 @@
   opacity: 0.94;
 }
 
-/* 44x44 M3 Primary Container Pill */
+/* 40x40 Stitch Logo Box */
+.nav-logo-box,
 .nav-logo-pill {
-  width: 44px;
-  height: 44px;
-  min-width: 44px;
-  min-height: 44px;
-  border-radius: var(--shape-full, 9999px);
-  background-color: var(--md-primary-container, #00513d);
-  color: var(--md-on-primary-container, #7affd4);
+  width: 40px;
+  height: 40px;
+  min-width: 40px;
+  min-height: 40px;
+  border-radius: var(--shape-md, 12px);
+  background: linear-gradient(135deg, #1c2230, #131722);
+  border: 1px solid rgba(230, 0, 126, 0.4);
+  box-shadow: 0 0 16px -2px rgba(230, 0, 126, 0.45);
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 4px 14px var(--md-primary-soft, rgba(56, 225, 173, 0.12)),
-              inset 0 1px 0 rgba(255, 255, 255, 0.22);
+  padding: 3px;
   position: relative;
   overflow: hidden;
   flex-shrink: 0;
-  transition: transform var(--motion-duration-short, 150ms) var(--motion-easing-standard, cubic-bezier(0.2, 0, 0, 1)),
-              box-shadow var(--motion-duration-short, 150ms) var(--motion-easing-standard, cubic-bezier(0.2, 0, 0, 1));
+  transition: transform var(--motion-duration-short, 150ms) var(--motion-easing-standard),
+              box-shadow var(--motion-duration-short, 150ms) var(--motion-easing-standard);
 }
 
+.topbar-brand:hover .nav-logo-box,
 .topbar-brand:hover .nav-logo-pill {
   transform: scale(1.05);
+  box-shadow: 0 0 20px rgba(230, 0, 126, 0.6);
+}
+
+.nav-logo-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  border-radius: 8px;
 }
 
 .nav-pulse-icon {
-  width: 26px;
-  height: 26px;
-  stroke: currentColor;
+  width: 24px;
+  height: 24px;
+  stroke: #ff80ab;
   fill: none;
   stroke-width: 2.2;
   stroke-linecap: round;
@@ -99,14 +110,35 @@
   min-width: 0;
 }
 
+.topbar-title-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  line-height: 1;
+}
+
 .topbar-title {
-  font-family: var(--font-sans);
-  font-size: 1.0625rem;
+  font-family: var(--font-display, var(--font-sans));
+  font-size: 1.05rem;
   font-weight: 700;
   letter-spacing: -0.015em;
   line-height: 1.2;
-  color: var(--md-on-surface, #e0f2eb);
+  color: var(--md-on-surface, #f3f4f8);
   white-space: nowrap;
+}
+
+.topbar-pill-badge {
+  padding: 2px 6px;
+  border-radius: 4px;
+  background-color: rgba(230, 0, 126, 0.15);
+  border: 1px solid rgba(230, 0, 126, 0.35);
+  color: #ff80ab;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
 html[lang="bn"] .topbar-title,
@@ -116,14 +148,15 @@ html[lang="bn"] .topbar-title,
 }
 
 .topbar-subtitle {
-  font-size: 0.75rem;
+  font-size: 0.7rem;
   font-weight: 500;
   line-height: 1.3;
-  color: var(--md-on-surface-variant, #9ab4aa);
+  color: var(--md-on-surface-variant, #a2abbd);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  max-width: 240px;
+  max-width: 260px;
+  margin-top: 3px;
 }
 
 html[lang="bn"] .topbar-subtitle,
@@ -131,11 +164,50 @@ html[lang="bn"] .topbar-subtitle,
   font-family: var(--font-bangla, 'Hind Siliguri', sans-serif);
 }
 
+/* Profile Avatar Button with Neon Ring */
+.nav-profile-avatar-btn {
+  width: 34px;
+  height: 34px;
+  min-width: 34px;
+  min-height: 34px;
+  border-radius: var(--shape-full);
+  background: linear-gradient(135deg, #e6007e, #d81b60, #009fe3);
+  padding: 2px;
+  box-shadow: 0 0 12px rgba(230, 0, 126, 0.4);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  flex-shrink: 0;
+  transition: transform var(--motion-duration-short) ease;
+}
+
+.nav-profile-avatar-btn:hover {
+  transform: scale(1.08);
+}
+
+.nav-profile-inner {
+  width: 100%;
+  height: 100%;
+  border-radius: var(--shape-full);
+  background-color: var(--md-surface);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.nav-profile-icon {
+  width: 17px;
+  height: 17px;
+  stroke: #ff80ab;
+}
+
 /* Actions Group */
 .topbar-actions {
   display: flex;
   align-items: center;
-  gap: var(--space-2, 0.5rem);
+  gap: 6px;
   flex-shrink: 0;
 }
 
@@ -143,9 +215,9 @@ html[lang="bn"] .topbar-subtitle,
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-width: 44px;
-  min-height: 44px;
-  padding: var(--space-2, 0.5rem);
+  min-width: 40px;
+  min-height: 40px;
+  padding: 6px;
   border-radius: var(--shape-full, 9999px);
   background-color: transparent;
   color: var(--md-on-surface-variant, #9ab4aa);
@@ -178,8 +250,8 @@ html[lang="bn"] .topbar-subtitle,
 }
 
 .nav-action-btn svg {
-  width: 20px;
-  height: 20px;
+  width: 19px;
+  height: 19px;
   stroke: currentColor;
   fill: none;
   stroke-width: 2;
@@ -193,17 +265,18 @@ html[lang="bn"] .topbar-subtitle,
   font-size: 0.875rem;
   font-weight: 700;
   letter-spacing: 0.02em;
-  min-width: 44px;
-  padding: 0 var(--space-2, 0.5rem);
-  color: var(--md-primary, #38e1ad);
-  border-color: var(--md-primary-soft, rgba(56, 225, 173, 0.12));
-  background-color: var(--md-primary-soft, rgba(56, 225, 173, 0.12));
+  min-width: 40px;
+  padding: 0 8px;
+  color: #ff80ab;
+  border-color: rgba(230, 0, 126, 0.35);
+  background-color: rgba(230, 0, 126, 0.14);
 }
 
 .nav-lang-btn:hover {
-  background-color: var(--md-primary-container, #00513d);
-  color: var(--md-on-primary-container, #7affd4);
-  border-color: transparent;
+  background-color: #2b0e1d;
+  color: #ff80ab;
+  border-color: #e6007e;
+  box-shadow: 0 0 10px rgba(230, 0, 126, 0.3);
 }
 
 /* Install Button - Hidden by default */
@@ -295,19 +368,27 @@ html[lang="bn"] .topbar-subtitle,
   transition: stroke var(--motion-duration-short, 150ms) ease;
 }
 
-/* Active State */
+/* Active State - Stitch Neon Magenta Glow */
 .bottom-nav-item.active {
-  color: var(--md-on-surface, #e0f2eb);
+  color: #ff80ab;
 }
 
 .bottom-nav-item.active .bottom-nav-indicator {
-  background-color: var(--md-secondary-container, #00513f);
-  color: var(--md-on-secondary-container, #9cf2d5);
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.14);
+  background-color: rgba(230, 0, 126, 0.16);
+  color: #ff80ab;
+  border: 1px solid rgba(230, 0, 126, 0.35);
+  box-shadow: 0 0 14px rgba(230, 0, 126, 0.3);
 }
 
 .bottom-nav-item.active .bottom-nav-indicator svg {
-  stroke-width: 2.3;
+  stroke-width: 2.4;
+  filter: drop-shadow(0 0 8px rgba(230, 0, 126, 0.6));
+}
+
+.bottom-nav-item.active .bottom-nav-label {
+  color: #ff80ab;
+  font-weight: 700;
+  text-shadow: 0 0 10px rgba(230, 0, 126, 0.4);
 }
 
 /* Item Label */
@@ -340,19 +421,26 @@ html[lang="bn"] .bottom-nav-label,
    Responsive Layout & Polish
    -------------------------------------------------------------------------- */
 @media (max-width: 480px) {
-  .topbar-subtitle {
-    max-width: 150px;
-  }
   .topbar-inner {
-    padding: var(--space-2, 0.5rem) var(--space-3, 0.75rem);
+    padding: var(--space-2, 0.5rem) var(--space-2, 0.5rem);
+    gap: 4px;
+  }
+  .topbar-subtitle {
+    max-width: 160px;
+    font-size: 0.68rem;
   }
   .topbar-actions {
-    gap: var(--space-1, 0.25rem);
+    gap: 4px;
   }
   .nav-action-btn {
-    min-width: 40px;
-    min-height: 40px;
-    padding: 6px;
+    min-width: 36px;
+    min-height: 36px;
+    padding: 5px;
+  }
+  .nav-lang-btn {
+    min-width: 36px;
+    padding: 0 6px;
+    font-size: 0.8rem;
   }
   .bottom-nav-indicator {
     width: 48px;

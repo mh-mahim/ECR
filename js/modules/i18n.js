@@ -28,13 +28,23 @@ export const TRANSLATIONS = {
     upNext: 'UP NEXT',
     freePeriod: 'Break / Free Period',
     dayCompleted: 'Classes Finished Today',
+    dayCompletedPill: 'DAY FINISHED',
+    dayCompletedKicker: 'Routine Completed',
     weekend: 'Weekend / Off-Day',
+    weekendPill: 'WEEKEND',
+    weekendKicker: 'Weekly Holiday',
     nextClassIn: 'Starts in',
     endsIn: 'Ends in',
     nextClassStartsAt: 'Next class at',
     routineRuns: 'Routine runs Sunday to Thursday',
     noMoreToday: 'No more classes scheduled today.',
     enjoyWeekend: 'Enjoy your weekend! Next routine day: Sunday.',
+    
+    // Section Headers
+    routineSectionKicker: 'Class Routine',
+    routineSectionTitle: '4th Semester (ENT 4/2) • 2nd Shift',
+    facultySectionKicker: 'Faculty Directory',
+    facultySectionTitle: 'Electronics Technology Department • CNPI',
     
     // Views & Tabs
     dayView: 'Day View',
@@ -82,8 +92,12 @@ export const TRANSLATIONS = {
     navSettings: 'Settings',
     navMore: 'More',
 
-    // Notice
-    dismissNotice: 'Dismiss'
+    // Notice Banner
+    officialRoutineBadge: 'Official Routine',
+    noticeDate: 'Session 2026–27 • 4th Sem (ENT 4/2)',
+    noticeLead: 'Academic Schedule Active:',
+    noticeBody: 'Regular classes run Sunday–Thursday from 01:30 PM to 06:45 PM at CNPI Campus. Please verify lab rooms and maintain regular attendance.',
+    dismissNotice: 'Dismiss notice'
   },
   bn: {
     appTitle: 'ইএনটি পালস',
@@ -103,13 +117,23 @@ export const TRANSLATIONS = {
     upNext: 'পরবর্তী ক্লাস',
     freePeriod: 'বিরতি / ফ্রি পিরিয়ড',
     dayCompleted: 'আজকের সব ক্লাস সম্পন্ন',
-    weekend: 'সাপ্তাহিক ছুটি',
+    dayCompletedPill: 'আজকের ক্লাস সমাপ্ত',
+    dayCompletedKicker: 'দৈনিক সূচি সম্পন্ন',
+    weekend: 'আজ সাপ্তাহিক ছুটি — ক্লাস বন্ধ',
+    weekendPill: 'সাপ্তাহিক ছুটি',
+    weekendKicker: 'ছুটির দিন',
     nextClassIn: 'শুরু হতে বাকি',
     endsIn: 'শেষ হতে বাকি',
     nextClassStartsAt: 'পরবর্তী ক্লাস শুরু',
     routineRuns: 'ক্লাস রুটিন রবিবার থেকে বৃহস্পতিবার',
     noMoreToday: 'আজকের মতো আর কোনো ক্লাস নেই।',
     enjoyWeekend: 'শুভ ছুটির দিন! পরবর্তী ক্লাস রবিবার।',
+    
+    // Section Headers
+    routineSectionKicker: 'ক্লাস রুটিন',
+    routineSectionTitle: '৪র্থ পর্ব (ইএনটি ৪/২) • ২য় শিফট',
+    facultySectionKicker: 'সম্মানিত শিক্ষকবৃন্দ',
+    facultySectionTitle: 'ইলেকট্রনিক্স টেকনোলজি বিভাগ • সিএনপিআই',
     
     // Views & Tabs
     dayView: 'দৈনিক ভিউ',
@@ -157,7 +181,11 @@ export const TRANSLATIONS = {
     navSettings: 'সেটিংস',
     navMore: 'আরও',
 
-    // Notice
+    // Notice Banner
+    officialRoutineBadge: 'অফিসিয়াল রুটিন',
+    noticeDate: 'সেশন ২০২৬–২৭ • ৪র্থ পর্ব (ইএনটি ৪/২)',
+    noticeLead: 'ক্লাস কার্যক্রম চলমান:',
+    noticeBody: 'রবিবার থেকে বৃহস্পতিবার দুপুর ০১:৩০ থেকে সন্ধ্যা ০৬:৪৫ পর্যন্ত ক্লাস সিএনপিআই ক্যাম্পাসে অনুষ্ঠিত হবে। ল্যাব রুম যাচাই করুন এবং নিয়মিত উপস্থিতি বজায় রাখুন।',
     dismissNotice: 'মুছে ফেলুন'
   }
 };

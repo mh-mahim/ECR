@@ -4,7 +4,7 @@
  * Offline caching with resilient fallback and asset versioning.
  */
 
-const CACHE_NAME = 'ent-pulse-v8-2026-m3';
+const CACHE_NAME = 'ent-pulse-v9-2026-m3-stitch';
 
 const CORE_ASSETS = [
   './',
@@ -23,6 +23,7 @@ const CORE_ASSETS = [
   './icons/icon.svg',
   './icons/icon-192.png',
   './icons/icon-512.png',
+  './icons/cnpi-logo.png',
   './js/app.js',
   './js/data/routine-data.js',
   './js/data/faculty-data.js',

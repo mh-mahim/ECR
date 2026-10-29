@@ -221,8 +221,11 @@ export const renderRoutineViews = (containerEl) => {
                 data-action="select-day"
                 data-day="${day.id}"
               >
-                <span class="day-tab-pill-name">${dayName}</span>
-                <span class="day-tab-pill-sub">${dayShort}</span>
+                <div class="day-tab-pill-content">
+                  <span class="day-tab-pill-name">${dayShort.toUpperCase()}</span>
+                  <span class="day-tab-pill-sub">${isToday ? t('today', lang) : dayName}</span>
+                </div>
+                <span class="day-tab-dot" aria-hidden="true"></span>
                 ${isToday ? `<span class="day-tab-today-badge">${t('today', lang)}</span>` : ''}
               </button>
             `;
@@ -281,7 +284,7 @@ export const renderRoutineViews = (containerEl) => {
 
         return `
           <article 
-            class="class-card ${isLive ? 'is-live' : ''}" 
+            class="class-card ${isLive ? 'is-live' : ''} ${isLab ? 'card-lab' : 'card-theory'}" 
             data-action="open-class-modal" 
             data-payload-key="${payloadKey}"
             tabindex="0"

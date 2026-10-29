@@ -166,12 +166,7 @@ export function navigateToSection(sectionId) {
   }
 
   if (sectionId === 'today') {
-    const todayTarget = document.getElementById('hero') || document.getElementById('home') || document.getElementById('routine');
-    if (todayTarget) {
-      todayTarget.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    } else {
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   } else if (sectionId === 'routine') {
     const routineEl = document.getElementById('routine');
     if (routineEl) {
@@ -183,7 +178,7 @@ export function navigateToSection(sectionId) {
       facultyEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
   } else if (sectionId === 'more') {
-    const moreEl = document.getElementById('more') || document.getElementById('statsSection') || document.querySelector('footer');
+    const moreEl = document.getElementById('more') || document.querySelector('footer');
     if (moreEl) {
       moreEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
@@ -207,78 +202,92 @@ export function renderHeader(containerEl) {
   const theme = state.theme || 'dark';
 
   container.innerHTML = `
-    <header class="app-topbar topbar">
-      <div class="topbar-inner">
-        <a class="topbar-brand" href="#home" id="topbarBrandLink" aria-label="${t('appTitle', lang)}">
-          <div class="nav-logo-pill" aria-hidden="true">
-            ${ICONS.pulse}
-          </div>
-          <div class="topbar-brand-text">
-            <span class="topbar-title" id="topbarTitle">${t('appTitle', lang)}</span>
-            <span class="topbar-subtitle" id="topbarSubtitle">${t('deptTitle', lang)}</span>
-          </div>
-        </a>
-
-        <div class="topbar-actions">
-          <!-- Install app button (hidden by default) -->
-          <button
-            class="nav-action-btn nav-install-btn hidden"
-            id="topbarInstallBtn"
-            type="button"
-            aria-label="${t('installApp', lang)}"
-            title="${t('installApp', lang)}"
-            hidden
-            style="display: none;"
-          >
-            ${ICONS.install}
-          </button>
-
-          <!-- Calendar Export button -->
-          <button
-            class="nav-action-btn nav-calendar-btn"
-            id="topbarCalendarBtn"
-            type="button"
-            aria-label="${t('exportIcs', lang)}"
-            title="${t('exportIcs', lang)}"
-          >
-            ${ICONS.calendar}
-          </button>
-
-          <!-- Share button -->
-          <button
-            class="nav-action-btn nav-share-btn"
-            id="topbarShareBtn"
-            type="button"
-            aria-label="${t('shareApp', lang)}"
-            title="${t('shareApp', lang)}"
-          >
-            ${ICONS.share}
-          </button>
-
-          <!-- Bangla / Language toggle ('বাং' / 'EN') -->
-          <button
-            class="nav-action-btn nav-lang-btn"
-            id="topbarLangBtn"
-            type="button"
-            aria-label="${t('toggleLanguage', lang)}"
-            title="${t('toggleLanguage', lang)}"
-          >
-            ${lang === 'en' ? 'বাং' : 'EN'}
-          </button>
-
-          <!-- Theme toggle (sun/moon icon) -->
-          <button
-            class="nav-action-btn nav-theme-btn"
-            id="topbarThemeBtn"
-            type="button"
-            aria-label="${t('toggleTheme', lang)}"
-            title="${t('toggleTheme', lang)}"
-          >
-            ${theme === 'dark' ? ICONS.sun : ICONS.moon}
-          </button>
+    <div class="topbar-inner">
+      <a class="topbar-brand" href="#today" id="topbarBrandLink" aria-label="${t('appTitle', lang)}">
+        <div class="nav-logo-box" aria-hidden="true">
+          <img src="icons/cnpi-logo.png" alt="ENT Pulse Logo" class="nav-logo-img" />
         </div>
+        <div class="topbar-brand-text">
+          <div class="topbar-title-row">
+            <span class="topbar-title" id="topbarTitle">${t('appTitle', lang)}</span>
+            <span class="topbar-pill-badge">ENT 4/2</span>
+          </div>
+          <span class="topbar-subtitle" id="topbarSubtitle">${lang === 'bn' ? '৪র্থ পর্ব • ইলেকট্রনিক্স (CNPI)' : '4th Sem • Electronics (CNPI)'}</span>
+        </div>
+      </a>
+
+      <div class="topbar-actions">
+        <!-- Install app button (hidden by default) -->
+        <button
+          class="nav-action-btn nav-install-btn hidden"
+          id="topbarInstallBtn"
+          type="button"
+          aria-label="${t('installApp', lang)}"
+          title="${t('installApp', lang)}"
+          hidden
+          style="display: none;"
+        >
+          ${ICONS.install}
+        </button>
+
+        <!-- Calendar Export button -->
+        <button
+          class="nav-action-btn nav-calendar-btn"
+          id="topbarCalendarBtn"
+          type="button"
+          aria-label="${t('exportIcs', lang)}"
+          title="${t('exportIcs', lang)}"
+        >
+          ${ICONS.calendar}
+        </button>
+
+        <!-- Share button -->
+        <button
+          class="nav-action-btn nav-share-btn"
+          id="topbarShareBtn"
+          type="button"
+          aria-label="${t('shareApp', lang)}"
+          title="${t('shareApp', lang)}"
+        >
+          ${ICONS.share}
+        </button>
+
+        <!-- Bangla / Language toggle ('বাং' / 'EN') -->
+        <button
+          class="nav-action-btn nav-lang-btn"
+          id="topbarLangBtn"
+          type="button"
+          aria-label="${t('toggleLanguage', lang)}"
+          title="${t('toggleLanguage', lang)}"
+        >
+          ${lang === 'en' ? 'বাং' : 'EN'}
+        </button>
+
+        <!-- Theme toggle (sun/moon icon) -->
+        <button
+          class="nav-action-btn nav-theme-btn"
+          id="topbarThemeBtn"
+          type="button"
+          aria-label="${t('toggleTheme', lang)}"
+          title="${t('toggleTheme', lang)}"
+        >
+          ${theme === 'dark' ? ICONS.sun : ICONS.moon}
+        </button>
+
+        <!-- Academic Info Profile Avatar -->
+        <button
+          class="nav-profile-avatar-btn"
+          id="topbarProfileBtn"
+          type="button"
+          aria-label="Academic Information"
+          title="Academic Information"
+        >
+          <div class="nav-profile-inner">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="nav-profile-icon"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          </div>
+        </button>
       </div>
-    </header>
+    </div>
   `;
 
   // Attach button event listeners
@@ -288,6 +297,16 @@ export function renderHeader(containerEl) {
   const shareBtn = container.querySelector('#topbarShareBtn');
   const calendarBtn = container.querySelector('#topbarCalendarBtn');
   const installBtn = container.querySelector('#topbarInstallBtn');
+  const profileBtn = container.querySelector('#topbarProfileBtn');
+
+  if (profileBtn) {
+    profileBtn.addEventListener('click', () => {
+      const moreEl = document.getElementById('more') || document.querySelector('footer');
+      if (moreEl) {
+        moreEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    });
+  }
 
   if (brandLink) {
     brandLink.addEventListener('click', (e) => {
@@ -366,7 +385,7 @@ export function renderHeader(containerEl) {
     });
   }
 
-  return container.firstElementChild;
+  return container;
 }
 
 /**
@@ -424,6 +443,32 @@ export function renderBottomNav(containerEl) {
   });
 
   return container.firstElementChild;
+}
+
+/**
+ * Initializes automatic ScrollSpy to update active bottom nav tab on user scroll
+ */
+export function initScrollSpy() {
+  const sections = ['today', 'routine', 'faculty', 'more'];
+  const sectionEls = sections.map(id => document.getElementById(id)).filter(Boolean);
+  
+  if (!('IntersectionObserver' in window) || sectionEls.length === 0) return;
+
+  const observer = new IntersectionObserver((entries) => {
+    const visibleEntries = entries.filter(e => e.isIntersecting);
+    if (visibleEntries.length > 0) {
+      visibleEntries.sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top);
+      const topSectionId = visibleEntries[0].target.id;
+      if (topSectionId && store.getState().activeSection !== topSectionId) {
+        store.setActiveSection(topSectionId);
+      }
+    }
+  }, {
+    rootMargin: '-70px 0px -40% 0px',
+    threshold: [0.1, 0.4]
+  });
+
+  sectionEls.forEach(el => observer.observe(el));
 }
 
 /**

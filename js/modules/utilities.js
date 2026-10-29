@@ -6,6 +6,7 @@
 import { store } from './state.js';
 import { RAW_ROUTINE, PERIODS, ACADEMIC_INFO } from '../data/routine-data.js';
 import { TEACHERS } from '../data/faculty-data.js';
+import { t } from './i18n.js';
 
 /**
  * Converts 12-hour AM/PM time (e.g. '01:30 PM') to iCalendar 24-hour time (e.g. '133000')
@@ -209,6 +210,7 @@ export function generateIcsCalendar() {
 /**
  * Renders the notice banner if not dismissed in store.
  * Wires dismiss button to persist state and animate closure.
+ * Updates text dynamically when language changes.
  * @param {HTMLElement|string} containerEl - Parent container element or CSS selector
  */
 export function renderNoticeBanner(containerEl) {
@@ -227,58 +229,66 @@ export function renderNoticeBanner(containerEl) {
   }
 
   // Remove existing banner if present
-  const existing = target.querySelector('.notice-banner');
-  if (existing) existing.remove();
-
-  const banner = document.createElement('aside');
-  banner.className = 'notice-banner';
-  banner.id = 'academicNoticeBanner';
-  banner.setAttribute('role', 'region');
-  banner.setAttribute('aria-label', 'Academic Announcement');
-
-  banner.innerHTML = `
-    <div class="notice-card">
-      <div class="notice-icon-wrapper" aria-hidden="true">
-        <svg class="notice-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
-          <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
-        </svg>
-      </div>
-      <div class="notice-content">
-        <div class="notice-header">
-          <span class="notice-badge">Official Routine</span>
-          <span class="notice-date">Session 2026–27 • 4th Sem (ENT 4/2)</span>
-        </div>
-        <p class="notice-message">
-          <strong>Academic Schedule Active:</strong> Regular classes run Sunday–Thursday from <strong>01:30 PM to 06:45 PM</strong> at CNPI Campus. Please verify lab rooms and maintain regular attendance.
-        </p>
-      </div>
-      <button class="notice-dismiss-btn" id="dismissNoticeBtn" aria-label="Dismiss notice" title="Dismiss notice">
-        <svg class="notice-dismiss-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-          <line x1="18" y1="6" x2="6" y2="18"></line>
-          <line x1="6" y1="6" x2="18" y2="18"></line>
-        </svg>
-      </button>
-    </div>
-  `;
-
-  // Attach dismiss handler
-  const dismissBtn = banner.querySelector('#dismissNoticeBtn');
-  if (dismissBtn) {
-    dismissBtn.addEventListener('click', () => {
-      banner.classList.add('dismissing');
-      setTimeout(() => {
-        banner.remove();
-      }, 300);
-      store.dismissNotice();
-    });
+  let banner = target.querySelector('#academicNoticeBanner');
+  if (!banner) {
+    banner = document.createElement('aside');
+    banner.className = 'notice-banner';
+    banner.id = 'academicNoticeBanner';
+    banner.setAttribute('role', 'region');
+    banner.setAttribute('aria-label', 'Academic Announcement');
+    target.prepend(banner);
   }
 
-  // Prepend to target container
-  target.prepend(banner);
+  function renderContent() {
+    const state = store.getState();
+    const lang = state.lang || 'en';
 
-  // Subscribe to external dismissal in store
+    banner.innerHTML = `
+      <div class="notice-card">
+        <div class="notice-icon-wrapper" aria-hidden="true">
+          <svg class="notice-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+            <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+          </svg>
+        </div>
+        <div class="notice-content">
+          <div class="notice-header">
+            <span class="notice-badge">${t('officialRoutineBadge', lang)}</span>
+            <span class="notice-date">${t('noticeDate', lang)}</span>
+          </div>
+          <p class="notice-message">
+            <strong>${t('noticeLead', lang)}</strong> ${t('noticeBody', lang)}
+          </p>
+        </div>
+        <button class="notice-dismiss-btn" id="dismissNoticeBtn" aria-label="${t('dismissNotice', lang)}" title="${t('dismissNotice', lang)}">
+          <svg class="notice-dismiss-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+    `;
+
+    // Attach dismiss handler
+    const dismissBtn = banner.querySelector('#dismissNoticeBtn');
+    if (dismissBtn) {
+      dismissBtn.addEventListener('click', () => {
+        banner.classList.add('dismissing');
+        setTimeout(() => {
+          banner.remove();
+        }, 300);
+        store.dismissNotice();
+      });
+    }
+  }
+
+  renderContent();
+
+  // Subscribe to language changes & external dismissal in store
   store.subscribe((state, changedKeys) => {
+    if (changedKeys.includes('lang') && !state.noticeDismissed && banner.isConnected) {
+      renderContent();
+    }
     if (changedKeys.includes('noticeDismissed') && state.noticeDismissed) {
       if (banner.isConnected) {
         banner.classList.add('dismissing');

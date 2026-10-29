@@ -10,7 +10,7 @@
   background-color: var(--md-surface-container);
   border: 1px solid var(--md-outline-variant);
   border-radius: var(--shape-2xl);
-  padding: 20px;
+  padding: 18px 20px;
   box-shadow: var(--shadow-1);
   overflow: hidden;
   transition: background-color var(--motion-duration-medium) var(--motion-easing-standard),
@@ -18,19 +18,28 @@
               box-shadow var(--motion-duration-medium) var(--motion-easing-standard);
 }
 
-/* Subtle decorative ambient electronics backdrop */
+@media (max-width: 480px) {
+  .hero-card,
+  .hero-container {
+    padding: 14px 14px;
+    border-radius: var(--shape-xl);
+  }
+}
+
+/* Subtle decorative ambient electronics backdrop - Stitch Magenta & Cyan Glow */
 .hero-card::before,
 .hero-container::before {
   content: "";
   position: absolute;
   top: -50px;
   right: -50px;
-  width: 200px;
-  height: 200px;
+  width: 220px;
+  height: 220px;
   border-radius: 50%;
-  background: radial-gradient(circle, var(--md-primary-soft) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(230, 0, 126, 0.22) 0%, transparent 70%);
   pointer-events: none;
-  opacity: 0.85;
+  opacity: 0.9;
+  filter: blur(40px);
 }
 
 .hero-card::after,
@@ -39,11 +48,12 @@
   position: absolute;
   bottom: -40px;
   left: 20px;
-  width: 160px;
-  height: 100px;
+  width: 200px;
+  height: 180px;
   border-radius: 50%;
-  background: radial-gradient(circle, rgba(92, 212, 255, 0.08) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(0, 159, 227, 0.18) 0%, transparent 70%);
   pointer-events: none;
+  filter: blur(40px);
 }
 
 /* Header & Status Bar */
@@ -54,14 +64,14 @@
   align-items: center;
   justify-content: space-between;
   flex-wrap: wrap;
-  gap: var(--space-3);
-  margin-bottom: var(--space-4);
+  gap: var(--space-2);
+  margin-bottom: var(--space-3);
 }
 
 .hero-badges-group {
   display: flex;
   align-items: center;
-  gap: var(--space-2);
+  gap: 6px;
   flex-wrap: wrap;
 }
 
@@ -69,18 +79,19 @@
 .hero-status-pill {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
-  padding: 6px 14px;
+  gap: 7px;
+  padding: 5px 12px;
   border-radius: var(--shape-full);
-  font-size: 0.75rem;
+  font-size: 0.72rem;
   font-weight: 700;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.03em;
   text-transform: uppercase;
   transition: all var(--motion-duration-short) var(--motion-easing-standard);
   border: 1px solid var(--md-outline-variant);
   background-color: var(--md-surface-container-high);
   color: var(--md-on-surface);
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+  white-space: nowrap;
 }
 
 /* Live Dot with Gentle Breath Animation */
@@ -95,36 +106,37 @@
 
 /* Status variants */
 .hero-status-pill.status-live {
-  background-color: var(--md-primary-soft);
-  color: var(--md-primary);
-  border-color: rgba(56, 225, 173, 0.38);
-  box-shadow: 0 0 14px rgba(56, 225, 173, 0.16);
+  background-color: var(--md-primary-container, #2b0e1d);
+  color: var(--md-on-primary-container, #ff80ab);
+  border-color: rgba(230, 0, 126, 0.45);
+  box-shadow: 0 0 14px rgba(230, 0, 126, 0.25);
 }
 
 .hero-status-pill.status-live .hero-status-dot {
-  background-color: var(--md-primary);
+  background-color: var(--md-primary, #e6007e);
   animation: heroDotBreathLive 2.2s ease-in-out infinite;
 }
 
 .hero-status-pill.status-next {
-  background-color: rgba(92, 212, 255, 0.12);
-  color: var(--md-tertiary);
-  border-color: rgba(92, 212, 255, 0.35);
+  background-color: var(--md-secondary-container, #042034);
+  color: var(--md-tertiary, #00daf3);
+  border-color: rgba(0, 218, 243, 0.45);
+  box-shadow: 0 0 14px rgba(0, 159, 227, 0.22);
 }
 
 .hero-status-pill.status-next .hero-status-dot {
-  background-color: var(--md-tertiary);
+  background-color: var(--md-tertiary, #00daf3);
   animation: heroDotBreathNext 2.8s ease-in-out infinite;
 }
 
 .hero-status-pill.status-break {
-  background-color: rgba(251, 200, 104, 0.12);
-  color: var(--md-warning);
-  border-color: rgba(251, 200, 104, 0.35);
+  background-color: rgba(251, 200, 104, 0.14);
+  color: var(--md-warning, #fbc868);
+  border-color: rgba(251, 200, 104, 0.4);
 }
 
 .hero-status-pill.status-break .hero-status-dot {
-  background-color: var(--md-warning);
+  background-color: var(--md-warning, #fbc868);
   animation: heroDotBreathBreak 2.4s ease-in-out infinite;
 }
 
@@ -135,7 +147,7 @@
 }
 
 .hero-status-pill.status-finished .hero-status-dot {
-  background-color: var(--md-secondary);
+  background-color: var(--md-secondary, #009fe3);
   opacity: 0.8;
 }
 
@@ -154,22 +166,22 @@
 @keyframes heroDotBreathLive {
   0%, 100% {
     transform: scale(1);
-    box-shadow: 0 0 0 0 rgba(56, 225, 173, 0.6);
+    box-shadow: 0 0 0 0 rgba(230, 0, 126, 0.6);
   }
   50% {
     transform: scale(1.25);
-    box-shadow: 0 0 0 6px rgba(56, 225, 173, 0);
+    box-shadow: 0 0 0 6px rgba(230, 0, 126, 0);
   }
 }
 
 @keyframes heroDotBreathNext {
   0%, 100% {
     transform: scale(1);
-    box-shadow: 0 0 0 0 rgba(92, 212, 255, 0.5);
+    box-shadow: 0 0 0 0 rgba(0, 218, 243, 0.6);
   }
   50% {
     transform: scale(1.2);
-    box-shadow: 0 0 0 5px rgba(92, 212, 255, 0);
+    box-shadow: 0 0 0 5px rgba(0, 218, 243, 0);
   }
 }
 
@@ -203,42 +215,46 @@
 .hero-batch-badge {
   display: inline-flex;
   align-items: center;
-  padding: 5px 11px;
+  padding: 4px 9px;
   border-radius: var(--shape-full);
-  font-size: 0.7rem;
+  font-size: 0.68rem;
   font-weight: 700;
   letter-spacing: 0.02em;
   background-color: var(--md-surface-container-low);
   border: 1px solid var(--md-outline-variant);
   color: var(--md-on-surface-variant);
+  white-space: nowrap;
 }
 
 .hero-batch-badge.badge-primary {
-  color: var(--md-primary);
-  border-color: rgba(56, 225, 173, 0.25);
-  background-color: var(--md-primary-soft);
+  color: #ff80ab;
+  border-color: rgba(230, 0, 126, 0.35);
+  background-color: #2b0e1d;
 }
 
 /* Dhaka Live Clock Chip */
 .hero-clock-chip {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  gap: 5px;
   font-family: var(--font-mono);
-  font-size: 0.8125rem;
+  font-size: 0.78rem;
   font-weight: 600;
-  color: var(--md-on-surface-variant);
-  background-color: var(--md-surface-container-low);
-  border: 1px solid var(--md-outline-variant);
-  padding: 5px 12px;
+  color: #00daf3;
+  background-color: #042034;
+  border: 1px solid rgba(0, 159, 227, 0.35);
+  padding: 4px 10px;
   border-radius: var(--shape-full);
   margin-left: auto;
+  white-space: nowrap;
+  box-shadow: 0 0 10px rgba(0, 159, 227, 0.15);
 }
 
 .hero-clock-icon {
   width: 14px;
   height: 14px;
-  opacity: 0.75;
+  opacity: 0.85;
+  stroke: #00daf3;
   flex-shrink: 0;
 }
 
@@ -248,8 +264,8 @@
   z-index: 2;
   display: flex;
   flex-direction: column;
-  gap: var(--space-4);
-  margin-bottom: var(--space-4);
+  gap: var(--space-3);
+  margin-bottom: var(--space-3);
 }
 
 @media (min-width: 680px) {
@@ -266,53 +282,68 @@
   min-width: 0;
 }
 
-.hero-kicker {
-  display: block;
-  font-size: 0.75rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  color: var(--md-primary);
+.hero-status-kicker-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
   margin-bottom: 6px;
 }
 
-.hero-headline {
-  font: var(--type-headline-large);
-  color: var(--md-on-surface);
+.hero-kicker {
+  display: inline-block;
+  font-size: 0.72rem;
   font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #ff80ab;
+  line-height: 1.2;
+}
+
+.hero-headline {
+  font-family: var(--font-display);
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: var(--md-on-surface);
   margin: 0;
   word-break: break-word;
   line-height: 1.25;
   letter-spacing: -0.015em;
 }
 
+@media (max-width: 480px) {
+  .hero-headline {
+    font-size: 1.35rem;
+  }
+}
+
 @media (min-width: 768px) {
   .hero-headline {
-    font-size: 1.85rem;
+    font-size: 1.95rem;
     line-height: 1.2;
   }
 }
 
 .hero-subtitle {
-  margin-top: 8px;
+  margin-top: 6px;
   display: flex;
   align-items: center;
   flex-wrap: wrap;
-  gap: 8px 14px;
-  font-size: 0.875rem;
+  gap: 6px 12px;
+  font-size: 0.8125rem;
   color: var(--md-on-surface-variant);
-  line-height: 1.45;
+  line-height: 1.4;
 }
 
 .hero-sub-item {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  gap: 5px;
 }
 
 .hero-icon-sm {
-  width: 15px;
-  height: 15px;
+  width: 14px;
+  height: 14px;
   opacity: 0.75;
   flex-shrink: 0;
 }
@@ -320,36 +351,38 @@
 .hero-sub-chip {
   display: inline-flex;
   align-items: center;
-  padding: 3px 8px;
+  padding: 2px 7px;
   border-radius: var(--shape-xs);
-  font-size: 0.75rem;
+  font-size: 0.7rem;
   font-weight: 700;
   border: 1px solid transparent;
 }
 
 .hero-sub-chip.chip-lab {
-  background-color: rgba(92, 212, 255, 0.14);
-  color: var(--md-tertiary);
-  border-color: rgba(92, 212, 255, 0.28);
+  background-color: #2b0e1d;
+  color: #ff80ab;
+  border-color: rgba(230, 0, 126, 0.4);
 }
 
 .hero-sub-chip.chip-theory {
-  background-color: var(--md-primary-soft);
-  color: var(--md-primary);
-  border-color: rgba(56, 225, 173, 0.28);
+  background-color: #042034;
+  color: #00daf3;
+  border-color: rgba(0, 159, 227, 0.35);
 }
 
-/* Countdown Timer */
+/* Telemetry Pod / Countdown Timer */
 .hero-timer-box {
-  background-color: var(--md-surface-container-low);
-  border: 1px solid var(--md-outline-variant);
-  border-radius: var(--shape-lg);
+  background-color: rgba(19, 23, 34, 0.85);
+  border: 1px solid rgba(0, 159, 227, 0.35);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border-radius: var(--shape-xl);
   padding: 12px 18px;
   display: flex;
   flex-direction: column;
   justify-content: center;
-  min-width: 156px;
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.03);
+  min-width: 150px;
+  box-shadow: 0 0 18px rgba(0, 159, 227, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.06);
 }
 
 @media (max-width: 679px) {
@@ -357,54 +390,66 @@
     flex-direction: row;
     align-items: center;
     justify-content: space-between;
-    padding: 11px 16px;
+    padding: 10px 14px;
   }
 }
 
 .hero-timer-label {
-  font-size: 0.6875rem;
+  font-size: 0.65rem;
   font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.06em;
-  color: var(--md-on-surface-variant);
+  letter-spacing: 0.08em;
+  color: #00daf3;
   margin-bottom: 2px;
 }
 
 .hero-timer-digits {
   font-family: var(--font-mono);
-  font-size: 1.75rem;
-  font-weight: 700;
+  font-size: 1.85rem;
+  font-weight: 800;
   line-height: 1.1;
-  color: var(--md-primary);
+  color: #ff80ab;
+  text-shadow: 0 0 14px rgba(230, 0, 126, 0.55);
   font-variant-numeric: tabular-nums;
   letter-spacing: -0.02em;
 }
 
 @media (min-width: 768px) {
   .hero-timer-digits {
-    font-size: 2.1rem;
+    font-size: 2.2rem;
   }
 }
 
 .hero-timer-sub {
-  font-size: 0.6875rem;
-  color: var(--md-on-surface-variant);
-  margin-top: 3px;
-  font-family: var(--font-sans);
+  font-size: 0.68rem;
+  font-weight: 600;
+  color: #8aceff;
+  background-color: #042034;
+  border: 1px solid rgba(0, 159, 227, 0.25);
+  border-radius: 6px;
+  padding: 2px 8px;
+  margin-top: 5px;
+  width: fit-content;
+}
+
+@media (max-width: 679px) {
+  .hero-timer-sub {
+    margin-top: 0;
+  }
 }
 
 /* Progress Bar (6px height, rounded full, smooth width transition) */
 .hero-progress-container {
   position: relative;
   z-index: 2;
-  margin-top: var(--space-1);
-  margin-bottom: var(--space-4);
+  margin-top: 2px;
+  margin-bottom: var(--space-3);
 }
 
 .hero-progress-track {
   height: 6px;
   border-radius: var(--shape-full);
-  background-color: var(--md-surface-container-highest);
+  background-color: rgba(255, 255, 255, 0.08);
   overflow: hidden;
   position: relative;
 }
@@ -412,10 +457,10 @@
 .hero-progress-bar {
   height: 100%;
   border-radius: var(--shape-full);
-  background: linear-gradient(90deg, var(--md-primary), var(--md-tertiary));
+  background: linear-gradient(90deg, #ff2d87 0%, #e6007e 50%, #009fe3 100%);
   width: 0%;
   transition: width 0.6s var(--motion-easing-standard);
-  box-shadow: 0 0 10px rgba(56, 225, 173, 0.4);
+  box-shadow: 0 0 12px rgba(230, 0, 126, 0.5);
 }
 
 /* Up-Next Ticker (upcoming class preview) */
@@ -425,13 +470,13 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  padding: 8px 12px;
+  padding: 7px 11px;
   background-color: var(--md-surface-container-lowest);
   border: 1px dashed var(--md-outline-variant);
   border-radius: var(--shape-md);
-  font-size: 0.8125rem;
+  font-size: 0.78rem;
   color: var(--md-on-surface-variant);
-  margin-bottom: var(--space-4);
+  margin-bottom: var(--space-3);
 }
 
 .hero-next-ticker strong {
@@ -441,7 +486,7 @@
 .hero-next-ticker-label {
   font-weight: 700;
   text-transform: uppercase;
-  font-size: 0.6875rem;
+  font-size: 0.65rem;
   color: var(--md-tertiary);
   letter-spacing: 0.05em;
   flex-shrink: 0;
@@ -453,7 +498,7 @@
   z-index: 2;
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: var(--space-2);
+  gap: 8px;
 }
 
 @media (min-width: 640px) {
@@ -464,9 +509,9 @@
 }
 
 .hero-chip {
-  background-color: var(--md-surface-container-low);
-  border: 1px solid var(--md-outline-variant);
-  border-radius: var(--shape-md);
+  background-color: var(--md-surface-card, #131722);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: var(--shape-lg);
   padding: 10px 12px;
   display: flex;
   align-items: flex-start;
@@ -478,17 +523,18 @@
 }
 
 .hero-chip:hover {
-  border-color: var(--md-outline);
-  background-color: var(--md-surface-container-high);
-  box-shadow: var(--shadow-1);
+  border-color: rgba(230, 0, 126, 0.45);
+  background-color: #171d2b;
+  box-shadow: 0 0 14px rgba(230, 0, 126, 0.15);
+  transform: translateY(-1px);
 }
 
 .hero-chip-icon {
   width: 28px;
   height: 28px;
   border-radius: var(--shape-sm);
-  background-color: var(--md-primary-soft);
-  color: var(--md-primary);
+  background-color: #2b0e1d;
+  color: #ff80ab;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -496,9 +542,23 @@
   margin-top: 1px;
 }
 
+.hero-chip.chip-teacher .hero-chip-icon,
+.hero-chip.chip-inst .hero-chip-icon {
+  background-color: #2b0e1d;
+  color: #ff80ab;
+  border: 1px solid rgba(230, 0, 126, 0.35);
+}
+
+.hero-chip.chip-load .hero-chip-icon,
+.hero-chip.chip-days .hero-chip-icon {
+  background-color: #092236;
+  color: #00daf3;
+  border: 1px solid rgba(0, 159, 227, 0.35);
+}
+
 .hero-chip-icon svg {
-  width: 16px;
-  height: 16px;
+  width: 15px;
+  height: 15px;
 }
 
 .hero-chip-content {
@@ -508,7 +568,7 @@
 
 .hero-chip-label {
   display: block;
-  font-size: 0.625rem;
+  font-size: 0.6rem;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.05em;
@@ -518,7 +578,7 @@
 
 .hero-chip-value {
   display: block;
-  font-size: 0.8125rem;
+  font-size: 0.78rem;
   font-weight: 700;
   color: var(--md-on-surface);
   line-height: 1.3;
@@ -530,7 +590,7 @@
 
 .hero-chip-sub {
   display: block;
-  font-size: 0.625rem;
+  font-size: 0.6rem;
   color: var(--md-on-surface-variant);
   margin-top: 1px;
   white-space: nowrap;
