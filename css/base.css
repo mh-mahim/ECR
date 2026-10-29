@@ -3,7 +3,7 @@
    ========================================================================== */
 
 /* Web Fonts */
-@import url('https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800&family=DM+Mono:wght@500;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&family=Hind+Siliguri:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap');
 
 *, *::before, *::after {
   box-sizing: border-box;
@@ -170,7 +170,7 @@ body::before {
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  color: var(--md-primary);
+  color: #ff80ab;
 }
 
 .section-kicker-icon {
@@ -181,6 +181,7 @@ body::before {
 }
 
 .section-title {
+  font-family: var(--font-display);
   font-size: 1.15rem;
   font-weight: 700;
   color: var(--md-on-surface);
@@ -199,11 +200,12 @@ html[lang="bn"] .section-title,
   align-items: center;
   padding: 4px 10px;
   border-radius: var(--shape-full);
-  background-color: var(--md-surface-container);
-  border: 1px solid var(--md-outline-variant);
-  color: var(--md-on-surface-variant);
+  background-color: #042034;
+  border: 1px solid rgba(0, 159, 227, 0.3);
+  color: #00daf3;
   font-size: 0.75rem;
-  font-weight: 600;
+  font-weight: 700;
+  font-family: var(--font-mono);
   white-space: nowrap;
   flex-shrink: 0;
 }
@@ -242,9 +244,10 @@ html[lang="bn"] .section-title,
 }
 
 .footer-title {
+  font-family: var(--font-display);
   font-weight: 700;
   color: var(--md-on-surface);
-  font-size: 0.9375rem;
+  font-size: 0.95rem;
   letter-spacing: -0.2px;
 }
 
@@ -262,14 +265,14 @@ html[lang="bn"] .section-title,
 }
 
 .footer-credit a {
-  color: var(--md-primary);
+  color: #ff80ab;
   font-weight: 600;
   text-decoration: underline;
   text-underline-offset: 3px;
 }
 
 .footer-credit a:hover {
-  color: var(--md-secondary);
+  color: #00daf3;
 }
 
 .footer-links {
@@ -297,8 +300,9 @@ html[lang="bn"] .section-title,
 }
 
 .footer-link-pill:hover {
-  background-color: var(--md-surface-container-high);
-  border-color: var(--md-primary);
-  color: var(--md-primary);
+  background-color: #2b0e1d;
+  border-color: #e6007e;
+  color: #ff80ab;
+  box-shadow: 0 0 12px rgba(230, 0, 126, 0.25);
   transform: translateY(-1px);
 }

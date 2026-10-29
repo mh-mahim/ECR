@@ -216,7 +216,7 @@ const generateHeroHTML = (lang = 'en') => {
     <!-- Academic Info Chips: Class teacher, Total load, Working days, CNPI -->
     <div class="hero-chips-grid">
       <!-- 1. Class Teacher -->
-      <div class="hero-chip">
+      <div class="hero-chip chip-teacher">
         <div class="hero-chip-icon" aria-hidden="true">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/>
@@ -231,7 +231,7 @@ const generateHeroHTML = (lang = 'en') => {
       </div>
 
       <!-- 2. Total Load -->
-      <div class="hero-chip">
+      <div class="hero-chip chip-load">
         <div class="hero-chip-icon" aria-hidden="true">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <path d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
@@ -245,7 +245,7 @@ const generateHeroHTML = (lang = 'en') => {
       </div>
 
       <!-- 3. Working Days -->
-      <div class="hero-chip">
+      <div class="hero-chip chip-days">
         <div class="hero-chip-icon" aria-hidden="true">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
@@ -262,7 +262,7 @@ const generateHeroHTML = (lang = 'en') => {
       </div>
 
       <!-- 4. CNPI -->
-      <div class="hero-chip">
+      <div class="hero-chip chip-inst">
         <div class="hero-chip-icon" aria-hidden="true">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <path d="M22 10v6M2 10l10-5 10 5-10 5z"/>

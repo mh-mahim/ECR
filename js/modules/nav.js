@@ -204,12 +204,15 @@ export function renderHeader(containerEl) {
   container.innerHTML = `
     <div class="topbar-inner">
       <a class="topbar-brand" href="#today" id="topbarBrandLink" aria-label="${t('appTitle', lang)}">
-        <div class="nav-logo-pill" aria-hidden="true">
-          ${ICONS.pulse}
+        <div class="nav-logo-box" aria-hidden="true">
+          <img src="icons/cnpi-logo.png" alt="ENT Pulse Logo" class="nav-logo-img" />
         </div>
         <div class="topbar-brand-text">
-          <span class="topbar-title" id="topbarTitle">${t('appTitle', lang)}</span>
-          <span class="topbar-subtitle" id="topbarSubtitle">${t('deptTitle', lang)}</span>
+          <div class="topbar-title-row">
+            <span class="topbar-title" id="topbarTitle">${t('appTitle', lang)}</span>
+            <span class="topbar-pill-badge">ENT 4/2</span>
+          </div>
+          <span class="topbar-subtitle" id="topbarSubtitle">${lang === 'bn' ? '৪র্থ পর্ব • ইলেকট্রনিক্স (CNPI)' : '4th Sem • Electronics (CNPI)'}</span>
         </div>
       </a>
 
@@ -270,6 +273,19 @@ export function renderHeader(containerEl) {
         >
           ${theme === 'dark' ? ICONS.sun : ICONS.moon}
         </button>
+
+        <!-- Academic Info Profile Avatar -->
+        <button
+          class="nav-profile-avatar-btn"
+          id="topbarProfileBtn"
+          type="button"
+          aria-label="Academic Information"
+          title="Academic Information"
+        >
+          <div class="nav-profile-inner">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="nav-profile-icon"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          </div>
+        </button>
       </div>
     </div>
   `;
@@ -281,6 +297,16 @@ export function renderHeader(containerEl) {
   const shareBtn = container.querySelector('#topbarShareBtn');
   const calendarBtn = container.querySelector('#topbarCalendarBtn');
   const installBtn = container.querySelector('#topbarInstallBtn');
+  const profileBtn = container.querySelector('#topbarProfileBtn');
+
+  if (profileBtn) {
+    profileBtn.addEventListener('click', () => {
+      const moreEl = document.getElementById('more') || document.querySelector('footer');
+      if (moreEl) {
+        moreEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    });
+  }
 
   if (brandLink) {
     brandLink.addEventListener('click', (e) => {
