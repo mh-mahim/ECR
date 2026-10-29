@@ -40,6 +40,23 @@ body {
   scroll-margin-top: 76px;
 }
 
+/* Hero Section Spacing: breathing room under header and before routine section */
+#today {
+  margin-top: 18px;
+  margin-bottom: 24px;
+}
+
+@media (max-width: 480px) {
+  #today {
+    margin-top: 12px;
+    margin-bottom: 18px;
+  }
+}
+
+.routine-header {
+  margin-top: 0;
+}
+
 /* Bangla Typography Override */
 html[lang="bn"],
 [lang="bn"],

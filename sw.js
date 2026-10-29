@@ -4,7 +4,7 @@
  * Offline caching with resilient fallback and asset versioning.
  */
 
-const CACHE_NAME = 'ent-pulse-v9-2026-m3-stitch';
+const CACHE_NAME = 'ent-pulse-v10-2026-m3-stitch';
 
 const CORE_ASSETS = [
   './',

@@ -1,5 +1,5 @@
 {
-  "name": "ENT Pulse — Electronics Routine",
+  "name": "ENT Pulse",
   "short_name": "ENT Pulse",
   "description": "Electronics Technology 4th Semester Class Routine (ENT 4/2), Chapainawabganj Govt. Polytechnic Institute.",
   "id": "./",
@@ -7,8 +7,8 @@
   "scope": "./",
   "display": "standalone",
   "orientation": "any",
-  "theme_color": "#091311",
-  "background_color": "#091311",
+  "theme_color": "#0d1117",
+  "background_color": "#0d1117",
   "lang": "en",
   "dir": "ltr",
   "categories": [
