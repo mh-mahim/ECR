@@ -45,13 +45,7 @@ document.addEventListener('DOMContentLoaded', () => {
     renderHeader(headerContainer);
   }
 
-  // 4. Mount Announcement / Notice Banner
-  const noticeContainer = document.getElementById('noticeMount');
-  if (noticeContainer) {
-    renderNoticeBanner(noticeContainer);
-  }
-
-  // 5. Mount Now-Next Hero Console & start live timer
+  // 4. Mount Now-Next Hero Console & start live timer
   const heroContainer = document.getElementById('heroMount');
   if (heroContainer) {
     renderHero(heroContainer);

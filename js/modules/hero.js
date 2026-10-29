@@ -62,10 +62,12 @@ export const getStatusPillText = (statusKey, lang = 'en') => {
       case 'LIVE NOW':
         return t('inClass', 'bn'); // 'এখন চলছে'
       case 'UP NEXT':
+      case 'UP_NEXT':
         return t('upNext', 'bn'); // 'পরবর্তী ক্লাস'
       case 'BREAK':
         return 'বিরতি চলছে';
       case 'DAY FINISHED':
+      case 'DAY_FINISHED':
         return t('dayCompletedPill', 'bn'); // 'আজকের ক্লাস সমাপ্ত'
       case 'WEEKEND':
         return t('weekendPill', 'bn'); // 'সাপ্তাহিক ছুটি'
@@ -74,7 +76,10 @@ export const getStatusPillText = (statusKey, lang = 'en') => {
     }
   }
   switch (statusKey) {
+    case 'UP_NEXT':
+      return 'UP NEXT';
     case 'DAY FINISHED':
+    case 'DAY_FINISHED':
       return t('dayCompletedPill', 'en'); // 'DAY FINISHED'
     case 'WEEKEND':
       return t('weekendPill', 'en'); // 'WEEKEND'
@@ -89,12 +94,15 @@ export const getStatusPillText = (statusKey, lang = 'en') => {
 export const getStatusPillClass = (statusKey) => {
   switch (statusKey) {
     case 'LIVE NOW':
+    case 'IN_CLASS':
       return 'status-live';
     case 'UP NEXT':
+    case 'UP_NEXT':
       return 'status-next';
     case 'BREAK':
       return 'status-break';
     case 'DAY FINISHED':
+    case 'DAY_FINISHED':
       return 'status-finished';
     case 'WEEKEND':
       return 'status-weekend';
@@ -320,7 +328,8 @@ const updateHeroLiveState = (container) => {
   let nextTickerHTML = '';
 
   switch (statusKey) {
-    case 'LIVE NOW': {
+    case 'LIVE NOW':
+    case 'IN_CLASS': {
       const cur = status.currentClass;
       const subjObj = SUBJECTS[cur.course];
       headlineText = subjObj?.name?.[lang] || cur.subject;
@@ -424,6 +433,7 @@ const updateHeroLiveState = (container) => {
       break;
     }
 
+    case 'UP NEXT':
     case 'UP_NEXT': {
       const next = status.nextClass;
       const nextSubj = next ? (SUBJECTS[next.course]?.name?.[lang] || next.subject) : '';
@@ -467,7 +477,8 @@ const updateHeroLiveState = (container) => {
       break;
     }
 
-    case 'DAY FINISHED': {
+    case 'DAY FINISHED':
+    case 'DAY_FINISHED': {
       kickerText = t('dayCompletedKicker', lang); // 'দৈনিক সূচি সম্পন্ন' / 'Routine Completed'
       headlineText = t('dayCompleted', lang); // 'আজকের সব ক্লাস সম্পন্ন' / 'Classes Finished Today'
       subtitleHTML = `<span class="hero-sub-item">${t('noMoreToday', lang)}</span>`;
